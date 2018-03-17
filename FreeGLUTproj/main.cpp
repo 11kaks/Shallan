@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include <glew.h>
+#include <GL/glew.h>
 #include <freeglut.h>
 
 void display() {
