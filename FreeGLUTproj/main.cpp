@@ -1,31 +1,102 @@
 
 #include <iostream>
+#include <glm/vec3.hpp>
 
 #include <GL/glew.h>
 #include <freeglut.h>
 
-void display() {
+using namespace std;
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
-	glClear(GL_COLOR_BUFFER_BIT);         // Clear the color buffer
+const float k_fovy = 90.0f;
+const float k_aspect = 1.0f;
+const float k_zNear = 1.0f;
+const float k_zFar = 1000.0f;
 
-	glutWireTeapot(1.0f);
+const float k_windowPosX = 100.0f;
+const float k_windowPosY = 100.0f;
+const float k_windowSizeX = 600.0f;
+const float k_windowSizeY = 600.0f;
 
-	glFlush();  // Render now
+/*
+This function is called whenever a "Normal" key press is received.
+*/
+void keyboardNormal(unsigned char key, int x, int y) {
+	switch(key) {
+	case 27: // Escape key
+		exit(EXIT_SUCCESS);
+		break;
+	default:
+		cout << "Unhandled key press " << key << "." << endl;
+	}
+
+	glutPostRedisplay();
+}
+/*
+Called when resizing the window.
+*/
+void reshape(int w, int h) {
+
+	cout << "reshape" << endl;
+
+	// Prevent a divide by zero, when window is too short
+	// (you cant make a window of zero width).
+	if(h == 0)
+		h = 1;
+	float ratio = 1.0* w / h;
+
+	// Use the Projection Matrix
+	glMatrixMode(GL_PROJECTION);
+
+	// Reset Matrix
+	glLoadIdentity();
+
+	// Set the viewport to be the entire window
+	glViewport(0, 0, w, h);
+
+	// Set the correct perspective.
+	gluPerspective(45, ratio, k_zNear, k_zFar);
+
+	// Get Back to the Modelview
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void display(void) {
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	// Reset transformations
+	glLoadIdentity();
+
+	glTranslatef(0.0f, 0.0f, -5.0f);
+	glutSolidCube(1.0f);
+
+	glutSwapBuffers();
 }
 
 int main(int argc, char* argv[]) {
 
 	std::cout << "Starting" << std::endl;
 
+	// GLUT stuff
+
+	// init glut
 	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+	glutInitWindowPosition(k_windowPosX, k_windowPosY);
+	glutInitWindowSize(k_windowSizeX, k_windowSizeY);
+	glutCreateWindow("Freeglut test");
 
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutCreateWindow("OpenGL Setup Test"); // Create a window with the given title
-	glutInitWindowSize(320, 320);   // Set the window's initial width & height
-	glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
-	glutDisplayFunc(display); // Register display callback handler for window re-paint
+	// register callbacks
+	glutDisplayFunc(display);
+	glutReshapeFunc(reshape);
+	glutKeyboardFunc(keyboardNormal);
 
+
+	// OPENGL stuff
+
+
+
+	// GLEW stuff
 	GLenum err = glewInit();
 
 	if(GLEW_OK != err) {
@@ -36,8 +107,8 @@ int main(int argc, char* argv[]) {
 		std::cout << "Glew working " << std::endl;
 	}
 
-
-	glutMainLoop();           // Enter the infinitely event-processing loop
+	// Enter the infinitely event-processing loop
+	glutMainLoop();
 
 	return 0;
 }
