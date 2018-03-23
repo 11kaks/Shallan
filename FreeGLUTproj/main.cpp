@@ -110,5 +110,5 @@ int main(int argc, char* argv[]) {
 	// Enter the infinitely event-processing loop
 	glutMainLoop();
 
-	return 0;
+	return EXIT_SUCCESS;
 }

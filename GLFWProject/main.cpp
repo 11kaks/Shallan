@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include <GL/glew.h>
+// glfw3.h also includes OpenGl header.
+// Include all platform specific headers before glfw3.h.
 #include <GLFW\glfw3.h>
 
 int main(int argc, char** argv) {
