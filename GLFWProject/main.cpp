@@ -12,6 +12,9 @@
 // Include all platform specific headers before glfw3.h.
 #include <GLFW/glfw3.h>
 
+
+#include "shader.hpp"
+
 using namespace std;
 
 void errorCallback(int error, const char* description) {
@@ -94,6 +97,9 @@ int main(int argc, char** argv) {
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 	
+	// Create and compile our GLSL program from the shaders
+	GLuint programID = LoadShaders("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader");
+
 	while(!glfwWindowShouldClose(window)) {
 		// Setup view
 
@@ -103,13 +109,16 @@ int main(int argc, char** argv) {
 		glfwGetFramebufferSize(window, &width, &height);
 		float ratio = width / (float)height;
 		glViewport(0, 0, width, height);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		double time = glfwGetTime();
 
 		glMatrixMode(GL_PROJECTION_MATRIX);
 		glLoadIdentity();
 		gluPerspective(60, ratio, 0.1, 100);
+
+		// Use our shader
+		glUseProgram(programID);
 
 		glMatrixMode(GL_MODELVIEW_MATRIX);
 		glTranslatef(0, 0, -1);
