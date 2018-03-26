@@ -75,7 +75,6 @@ int main(int argc, char** argv) {
 
 	}
 
-
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -108,27 +107,11 @@ int main(int argc, char** argv) {
 
 	while(!glfwWindowShouldClose(window)) {
 		// Setup view
-
-		// Store width and height
-		//int width, height;
-
-		//glfwGetFramebufferSize(window, &width, &height);
-		//float ratio = width / (float)height;
-		//glViewport(0, 0, width, height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		//double time = glfwGetTime();
-
-		/*glMatrixMode(GL_PROJECTION_MATRIX);
-		glLoadIdentity();
-		gluPerspective(60, ratio, 0.1, 100);*/
 
 		// Use our shader
 		glUseProgram(programID);
-
-		//glMatrixMode(GL_MODELVIEW_MATRIX);
-		//glTranslatef(0, 0, -1);
-
+		
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
