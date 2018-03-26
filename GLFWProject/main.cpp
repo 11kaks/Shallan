@@ -23,34 +23,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-int main(int argc, char** argv) {
-
-	// Error callback can be registered before init
-	glfwSetErrorCallback(errorCallback);
-
-	if(!glfwInit()) {
-		// Initialization failed
-		return 1;
-	}
-	// AA x4
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	// Let's require a minimum OpenGL version of 3.3
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* window = glfwCreateWindow(640, 480, "GLFW window", NULL, NULL);
-
-	if(!window) {
-		// Failed to create a window.
-		glfwTerminate();
-		return 1;
-	}
-
-	// Set OpenGL context
-	glfwMakeContextCurrent(window);
-	
+void initGLEW() {
 	// Init GLEW after context is set
 	GLenum err = glewInit();
 
@@ -74,17 +47,50 @@ int main(int argc, char** argv) {
 		}
 
 	}
+}
 
-	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+GLFWwindow* initGLFWWindow() {
+	// Error callback can be registered before init
+	glfwSetErrorCallback(errorCallback);
 
-	// Need to create a Vertex Array Object and set it as the current one
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
+	if(!glfwInit()) {
+		// Initialization failed
+		throw(1);
+	}
+
+
+	// AA x4
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	// Let's require a minimum OpenGL version of 3.3
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	GLFWwindow* window = glfwCreateWindow(640, 480, "GLFW window", NULL, NULL);
+
+	if(!window) {
+		// Failed to create a window.
+		glfwTerminate();
+		throw(1);
+	}
+
 
 	// Register key callback
 	glfwSetKeyCallback(window, keyCallback);
+
+	// Set OpenGL context
+	glfwMakeContextCurrent(window);
+	return window;
+}
+
+void initDisplay() {
+	// Dark blue background
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+}
+
+GLuint initVertexBuffer() {
+
 
 	// An array of 3 vectors which represents 3 vertices
 	static const GLfloat g_vertex_buffer_data[] = {
@@ -101,6 +107,23 @@ int main(int argc, char** argv) {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+	return vertexbuffer;
+}
+
+int main(int argc, char** argv) {
+	
+	GLFWwindow* window = initGLFWWindow();
+
+	initGLEW();
+
+	initDisplay();
+
+	// Need to create a Vertex Array Object and set it as the current one
+	GLuint VertexArrayID;
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+
+	GLuint vertexbuffer = initVertexBuffer();
 	
 	// Create and compile our GLSL program from the shaders
 	GLuint programID = LoadShaders("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader");
