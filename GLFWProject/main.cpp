@@ -1,8 +1,5 @@
 #include <iostream>
 
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate..
 
 
@@ -31,17 +28,17 @@ int main(int argc, char** argv) {
 	// Error callback can be registered before init
 	glfwSetErrorCallback(errorCallback);
 
-	GLuint vertex_buffer, vertex_shader, fragment_shader, program;
-	GLint mvp_location, vpos_location, vcol_location;
-
 	if(!glfwInit()) {
 		// Initialization failed
 		return 1;
 	}
-
-	// Let's require a minimum OpenGL version of 2.0
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	// AA x4
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	// Let's require a minimum OpenGL version of 3.3
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(640, 480, "GLFW window", NULL, NULL);
 
@@ -78,6 +75,15 @@ int main(int argc, char** argv) {
 
 	}
 
+
+	// Dark blue background
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+
+	// Need to create a Vertex Array Object and set it as the current one
+	GLuint VertexArrayID;
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+
 	// Register key callback
 	glfwSetKeyCallback(window, keyCallback);
 
@@ -104,24 +110,24 @@ int main(int argc, char** argv) {
 		// Setup view
 
 		// Store width and height
-		int width, height;
+		//int width, height;
 
-		glfwGetFramebufferSize(window, &width, &height);
-		float ratio = width / (float)height;
-		glViewport(0, 0, width, height);
+		//glfwGetFramebufferSize(window, &width, &height);
+		//float ratio = width / (float)height;
+		//glViewport(0, 0, width, height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		double time = glfwGetTime();
+		//double time = glfwGetTime();
 
-		glMatrixMode(GL_PROJECTION_MATRIX);
+		/*glMatrixMode(GL_PROJECTION_MATRIX);
 		glLoadIdentity();
-		gluPerspective(60, ratio, 0.1, 100);
+		gluPerspective(60, ratio, 0.1, 100);*/
 
 		// Use our shader
 		glUseProgram(programID);
 
-		glMatrixMode(GL_MODELVIEW_MATRIX);
-		glTranslatef(0, 0, -1);
+		//glMatrixMode(GL_MODELVIEW_MATRIX);
+		//glTranslatef(0, 0, -1);
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
@@ -137,18 +143,9 @@ int main(int argc, char** argv) {
 		// Draw the triangle !
 		glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 		glDisableVertexAttribArray(0);
-
-		/*glBegin(GL_TRIANGLES);
-			glColor3f(1.f, 0.f, 0.f);
-			glVertex3f(-0.6f, -0.4f, 0.f);
-			glColor3f(0.f, 1.f, 0.f);
-			glVertex3f(0.6f, -0.4f, 0.f);
-			glColor3f(0.f, 0.f, 1.f);
-			glVertex3f(0.f, 0.6f, 0.f);
-		glEnd();*/
-
+		
 		// Set swap interval other than 0 to prevent tearing
-		glfwSwapInterval(1);
+		//glfwSwapInterval(1);
 
 		// Swap and check events
 		glfwSwapBuffers(window);
@@ -156,6 +153,12 @@ int main(int argc, char** argv) {
 	}
 
 	// Cleanup
+
+	// Cleanup VBO
+	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteVertexArrays(1, &VertexArrayID);
+	glDeleteProgram(programID);
+
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
