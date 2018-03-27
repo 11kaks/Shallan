@@ -41,6 +41,7 @@ private:
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_viewMatrix;
 	int m_verticeCount;
+	GLint m_uniformTimeLocation;
 };
 
 #endif

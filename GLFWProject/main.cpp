@@ -67,6 +67,7 @@ GLFWwindow* initGLFWWindow() {
 	// AA x4
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	// Let's require a minimum OpenGL version of 3.3
+	// Geometry shaders available 3.2->
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
@@ -110,6 +111,9 @@ int main(int argc, char** argv) {
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units

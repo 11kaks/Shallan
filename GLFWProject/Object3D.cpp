@@ -64,10 +64,12 @@ Object3D::Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 	m_modelMatrix = glm::mat4(1.0f);
 
 	// Create and compile our GLSL program from the shaders
-	m_programID = LoadShaders("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader");
+	m_programID = LoadShaders("shaders/rotate.vert", "shaders/SimpleFragmentShader.fragmentshader");
 
 	// Get a handle for our "MVP" uniform
 	m_MatrixID = glGetUniformLocation(m_programID, "MVP");
+
+	m_uniformTimeLocation = glGetUniformLocation(m_programID, "inTime");
 
 
 	// Read our .obj file
@@ -113,6 +115,9 @@ void Object3D::draw() {
 	// Send our transformation to the currently bound shader, 
 	// in the "MVP" uniform
 	glUniformMatrix4fv(m_MatrixID, 1, GL_FALSE, &MVP[0][0]);
+	float time = (float)glfwGetTime() ;
+	//cout << time << endl;
+	glUniform1f(m_uniformTimeLocation, time);
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
