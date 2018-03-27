@@ -3,16 +3,15 @@
 
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate..
 
-
 #include <GL/glew.h>
 
 // glfw3.h also includes OpenGl header.
 // Include all platform specific headers before glfw3.h.
 #include <GLFW/glfw3.h>
 
-
 #include "shader.hpp"
 #include "objloader.hpp"
+#include "Object3D.h"
 
 using namespace std;
 
@@ -118,7 +117,7 @@ GLuint initVertexBuffer() {
 	return vertexbuffer;
 }
 
-GLuint initColorBuffer() {
+/*GLuint initColorBuffer() {
 
 	// One color for each vertex. Same as vertex
 	static const GLfloat g_color_buffer_data[] = {
@@ -165,7 +164,7 @@ GLuint initColorBuffer() {
 	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 	return colorbuffer;
-}
+}*/
 
 int main(int argc, char** argv) {
 	
@@ -181,13 +180,12 @@ int main(int argc, char** argv) {
 	glBindVertexArray(VertexArrayID);
 
 	GLuint vertexbuffer = initVertexBuffer();
-	GLuint colorbuffer = initColorBuffer();
+	//GLuint colorbuffer = initColorBuffer();
 	
 	// Create and compile our GLSL program from the shaders
-	GLuint programID = LoadShaders(vertexShaderPath, fragmentShaderPath);
+	//GLuint programID = LoadShaders(vertexShaderPath, fragmentShaderPath);
 
-	// Get a handle for our "MVP" uniform
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
@@ -211,19 +209,21 @@ int main(int argc, char** argv) {
 	// Our ModelViewProjection : multiplication of our 3 matrices
 	glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
 
+	Object3D* cube = new Object3D(View, Projection);
+
 	while(!glfwWindowShouldClose(window)) {
 		// Setup view
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Use our shader
-		glUseProgram(programID);
+		//glUseProgram(programID);
 
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 		
 		// 1rst attribute buffer : vertices
-		glEnableVertexAttribArray(0);
+		/*glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glVertexAttribPointer(
 			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -232,10 +232,10 @@ int main(int argc, char** argv) {
 			GL_FALSE,           // normalized?
 			0,                  // stride
 			(void*)0            // array buffer offset
-		);
+		);*/
 
 		// 2nd attribute buffer : colors
-		glEnableVertexAttribArray(1);
+		/*glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 		glVertexAttribPointer(
 			1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
@@ -244,14 +244,16 @@ int main(int argc, char** argv) {
 			GL_FALSE,                         // normalized?
 			0,                                // stride
 			(void*)0                          // array buffer offset
-		);
+		);*/
 
 		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, 3*12); // Starting from vertex 0; 3 vertices total -> 1 triangle
-		glDisableVertexAttribArray(0);
+		//glDrawArrays(GL_TRIANGLES, 0, 3*12); // Starting from vertex 0; 3*12 vertices total -> 6 sided cube
+		//glDisableVertexAttribArray(0);
 		
 		// Set swap interval other than 0 to prevent tearing
 		//glfwSwapInterval(1);
+
+		cube->draw();
 
 		// Swap and check events
 		glfwSwapBuffers(window);
@@ -260,10 +262,12 @@ int main(int argc, char** argv) {
 
 	// Cleanup
 
+	delete cube;
+
 	// Cleanup VBO
 	glDeleteBuffers(1, &vertexbuffer);
 	glDeleteVertexArrays(1, &VertexArrayID);
-	glDeleteProgram(programID);
+	//glDeleteProgram(cube->getProgramId());
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
