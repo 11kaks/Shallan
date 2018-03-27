@@ -33,6 +33,8 @@ public:
 private:
 	// This will identify our vertex buffer
 	GLuint m_vertexbuffer;
+	GLuint m_normalbuffer;
+	GLuint m_colorbuffer;
 	GLuint m_MatrixID;
 	GLuint m_programID;
 	glm::mat4 m_modelMatrix;
