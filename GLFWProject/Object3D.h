@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate..
@@ -19,7 +20,6 @@
 class Object3D
 {
 public:
-	Object3D();
 	Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 
 	~Object3D();
@@ -32,16 +32,24 @@ public:
 
 private:
 	// This will identify our vertex buffer
-	GLuint m_vertexbuffer;
-	GLuint m_normalbuffer;
-	GLuint m_colorbuffer;
+	GLuint m_vertexBufferID;
+	GLuint m_normalBufferID;
+	GLuint m_colorBufferID;
 	GLuint m_MatrixID;
 	GLuint m_programID;
+	GLint m_timeID;
 	glm::mat4 m_modelMatrix;
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_viewMatrix;
 	int m_verticeCount;
-	GLint m_uniformTimeLocation;
+	// Default location of objects
+	std::string m_objectFilePath = "objects/";
+	// Default location of shaders
+	std::string m_shaderFilePath = "shaders/";
+	// Default name of object to be loaded
+	const std::string m_defaultObjectName = "cube.obj";
+	const std::string m_defaultVertexShaderName = "rotate.vert";
+	const std::string m_defaultFragmentShaderName = "SimpleFragmentShader.fragmentshader";
 };
 
 #endif

@@ -15,10 +15,6 @@
 
 using namespace std;
 
-const char* objFilePath = "objects/cube.obj";
-const char* vertexShaderPath = "shaders/SimpleVertexShader.vertexshader";
-const char* fragmentShaderPath = "shaders/SimpleFragmentShader.fragmentshader";
-
 void errorCallback(int error, const char* description) {
 	cerr << "[ERROR] - " << description << endl;
 }
@@ -63,7 +59,6 @@ GLFWwindow* initGLFWWindow() {
 		throw(1);
 	}
 
-
 	// AA x4
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	// Let's require a minimum OpenGL version of 3.3
@@ -80,7 +75,6 @@ GLFWwindow* initGLFWWindow() {
 		glfwTerminate();
 		throw(1);
 	}
-
 
 	// Register key callback
 	glfwSetKeyCallback(window, keyCallback);
@@ -115,30 +109,19 @@ int main(int argc, char** argv) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
+	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 	// Or, for an ortho camera :
 	//glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
 
 	// Camera matrix
-	glm::mat4 View = glm::lookAt(
+	glm::mat4 viewMatrix = glm::lookAt(
 		glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
 		glm::vec3(0, 0, 0), // and looks at the origin
 		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 	);
-	// Model matrix : an identity matrix (model will be at the origin)
-	glm::mat4 Model = glm::mat4(1.0f);
-
-	// Testing some transformations
-	/*Model = glm::rotate(Model, 30.0f, glm::vec3(0., 1., 0.));
-	Model = glm::translate(Model, glm::vec3(0., 0., 4.));
-	Model = glm::scale(Model, glm::vec3(3.));*/
-
-	// Our ModelViewProjection : multiplication of our 3 matrices
-	glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
-
-	Object3D* cube = new Object3D(View, Projection);
+	
+	Object3D* cube = new Object3D(viewMatrix, projectionMatrix);
 
 	while(!glfwWindowShouldClose(window)) {
 		// Setup view
@@ -158,8 +141,6 @@ int main(int argc, char** argv) {
 
 	delete cube;
 
-	// Cleanup VBO
-	//glDeleteBuffers(1, &vertexbuffer);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
 	glfwDestroyWindow(window);

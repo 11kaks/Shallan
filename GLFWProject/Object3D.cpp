@@ -3,80 +3,38 @@
 
 using namespace std;
 
-Object3D::Object3D() {
+void initColorBuffer();
 
-}
-
-
-void initColorBuffer() {
-
-// One color for each vertex. Same as vertex
-static const GLfloat g_color_buffer_data[] = {
--1.0f,-1.0f,-1.0f,
--1.0f,-1.0f, 1.0f,
--1.0f, 1.0f, 1.0f,
-1.0f, 1.0f,-1.0f,
--1.0f,-1.0f,-1.0f,
--1.0f, 1.0f,-1.0f,
-1.0f,-1.0f, 1.0f,
--1.0f,-1.0f,-1.0f,
-1.0f,-1.0f,-1.0f,
-1.0f, 1.0f,-1.0f,
-1.0f,-1.0f,-1.0f,
--1.0f,-1.0f,-1.0f,
--1.0f,-1.0f,-1.0f,
--1.0f, 1.0f, 1.0f,
--1.0f, 1.0f,-1.0f,
-1.0f,-1.0f, 1.0f,
--1.0f,-1.0f, 1.0f,
--1.0f,-1.0f,-1.0f,
--1.0f, 1.0f, 1.0f,
--1.0f,-1.0f, 1.0f,
-1.0f,-1.0f, 1.0f,
-1.0f, 1.0f, 1.0f,
-1.0f,-1.0f,-1.0f,
-1.0f, 1.0f,-1.0f,
-1.0f,-1.0f,-1.0f,
-1.0f, 1.0f, 1.0f,
-1.0f,-1.0f, 1.0f,
-1.0f, 1.0f, 1.0f,
-1.0f, 1.0f,-1.0f,
--1.0f, 1.0f,-1.0f,
-1.0f, 1.0f, 1.0f,
--1.0f, 1.0f,-1.0f,
--1.0f, 1.0f, 1.0f,
-1.0f, 1.0f, 1.0f,
--1.0f, 1.0f, 1.0f,
-1.0f,-1.0f, 1.0f
-};
-
-GLuint m_colorbuffer;
-glGenBuffers(1, &m_colorbuffer);
-glBindBuffer(GL_ARRAY_BUFFER, m_colorbuffer);
-glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
-//return colorbuffer;
-}
 
 Object3D::Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 
 	m_projectionMatrix = projectionMatrix;
 	m_viewMatrix = viewMatrix;
 	m_modelMatrix = glm::mat4(1.0f);
+	
+	// Testing some transformations
+	/*Model = glm::rotate(Model, 30.0f, glm::vec3(0., 1., 0.));
+	Model = glm::translate(Model, glm::vec3(0., 0., 4.));
+	Model = glm::scale(Model, glm::vec3(3.));*/
 
 	// Create and compile our GLSL program from the shaders
-	m_programID = LoadShaders("shaders/rotate.vert", "shaders/SimpleFragmentShader.fragmentshader");
+	string sVertexShaderFilePath = m_shaderFilePath + m_defaultVertexShaderName;
+	string sFragmentShaderFilePath = m_shaderFilePath + m_defaultFragmentShaderName;
+	m_programID = LoadShaders(sVertexShaderFilePath.c_str(), sFragmentShaderFilePath.c_str());
 
 	// Get a handle for our "MVP" uniform
 	m_MatrixID = glGetUniformLocation(m_programID, "MVP");
 
-	m_uniformTimeLocation = glGetUniformLocation(m_programID, "inTime");
+	m_timeID = glGetUniformLocation(m_programID, "inTime");
 
 
 	// Read our .obj file
 	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals; // Won't be used at the moment.
-	bool res = loadOBJ("objects/cube.obj", vertices, uvs, normals);
+
+	std::string objectFilePath = m_objectFilePath + m_defaultObjectName;
+	bool res = loadOBJ(objectFilePath.c_str(), vertices, uvs, normals);
 
 	if(res) {
 		m_verticeCount = vertices.size();
@@ -89,9 +47,9 @@ Object3D::Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 	initColorBuffer();
 	
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
-	glGenBuffers(1, &m_vertexbuffer);
+	glGenBuffers(1, &m_vertexBufferID);
 	// The following commands will talk about our 'vertexbuffer' buffer
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 	//return vertexbuffer;
@@ -99,8 +57,8 @@ Object3D::Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 
 	// NORMALS
 
-	glGenBuffers(1, &m_normalbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_normalbuffer);
+	glGenBuffers(1, &m_normalBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 
 }
@@ -117,11 +75,11 @@ void Object3D::draw() {
 	glUniformMatrix4fv(m_MatrixID, 1, GL_FALSE, &MVP[0][0]);
 	float time = (float)glfwGetTime() ;
 	//cout << time << endl;
-	glUniform1f(m_uniformTimeLocation, time);
+	glUniform1f(m_timeID, time);
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 	glVertexAttribPointer(
 		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 		3,                  // size
@@ -133,7 +91,7 @@ void Object3D::draw() {
 
 	// 2nd attribute buffer : colors
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, m_colorbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_colorBufferID);
 	glVertexAttribPointer(
 	1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
 	3,                                // size
@@ -145,7 +103,7 @@ void Object3D::draw() {
 
 	// 3rd attribute buffer : normals
 	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, m_normalbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
 	glVertexAttribPointer(
 		2,                                // attribute
 		3,                                // size
@@ -163,12 +121,59 @@ void Object3D::draw() {
 
 }
 
-
-
 Object3D::~Object3D() {
 	cout << "Deleting object" << endl;
-	glDeleteBuffers(1, &m_vertexbuffer);
-	glDeleteBuffers(1, &m_colorbuffer);
-	glDeleteBuffers(1, &m_normalbuffer);
+	glDeleteBuffers(1, &m_vertexBufferID);
+	glDeleteBuffers(1, &m_colorBufferID);
+	glDeleteBuffers(1, &m_normalBufferID);
 	glDeleteProgram(m_programID);
+}
+
+// Just some colors for testing...
+void initColorBuffer() {
+
+	// One color for each vertex. Same as vertex
+	static const GLfloat g_color_buffer_data[] = {
+		-1.0f,-1.0f,-1.0f,
+		-1.0f,-1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f,-1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f, 1.0f,-1.0f,
+		1.0f,-1.0f, 1.0f,
+		-1.0f,-1.0f,-1.0f,
+		1.0f,-1.0f,-1.0f,
+		1.0f, 1.0f,-1.0f,
+		1.0f,-1.0f,-1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f,-1.0f,
+		1.0f,-1.0f, 1.0f,
+		-1.0f,-1.0f, 1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f,-1.0f, 1.0f,
+		1.0f,-1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f,-1.0f,-1.0f,
+		1.0f, 1.0f,-1.0f,
+		1.0f,-1.0f,-1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f,-1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f,-1.0f,
+		-1.0f, 1.0f,-1.0f,
+		1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f,-1.0f,
+		-1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		1.0f,-1.0f, 1.0f
+	};
+
+	GLuint m_colorbuffer;
+	glGenBuffers(1, &m_colorbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_colorbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 }

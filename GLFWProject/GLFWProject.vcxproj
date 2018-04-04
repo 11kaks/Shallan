@@ -136,6 +136,12 @@
     <ClInclude Include="objloader.hpp" />
     <ClInclude Include="shader.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\rotate.vert" />
+    <None Include="shaders\SimpleFragmentShader.fragmentshader" />
+    <None Include="shaders\SimpleTransform.vertexshader" />
+    <None Include="shaders\SimpleVertexShader.vertexshader" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
