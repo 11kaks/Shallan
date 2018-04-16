@@ -1,0 +1,101 @@
+% Reaaliaikainen renderöinti -kurssin harjoitustyö
+
+\documentclass[utf8,bachelor]{gradu3}
+\usepackage[bookmarksopen,bookmarksnumbered,linktocpage]{hyperref}
+\usepackage{mathtools}
+\addbibresource{StrawWeaveShader.bib}
+
+
+%% ##############################
+\begin{document}
+
+\title{Punosvarjostin}
+
+\translatedtitle{Straw weave shader}
+
+%\studyline{}
+\avainsanat{avain1, avain2, avain3}
+\keywords{avainsanat englanniksi}
+\tiivistelma{Tiivistelmä on tyypillisesti 5-10 riviä pitkä esitys työn pääkohdista (tausta, tavoite, tulokset, johtopäätökset).
+}
+\abstract{Englanninkielinen versio tiivistelmästä.
+}
+
+\author{Kimmo Riihiaho}
+\contactinformation{\texttt{kimmo.a.riihiaho@student.jyu.fi}}
+% jos useita tekijöitä, anna useampi \author-komento
+\supervisor{Jarno Kansanaho}
+% jos useita ohjaajia, anna useampi \supervisor-komento
+\type{} % tämän makron oletus on ''pro gradu -tutkielma'' ja bachelor-optiolla kandidaatintutkielma
+
+\maketitle
+
+\mainmatter
+
+\chapter{Idea}
+
+Tarkoituksena on luoda varjostinohjelma, jolla voi kuvata punosta. Alunperin ajatuksena oli kuvata olkipunosta, mutta varjostin soveltunee myös esim. kankaan kuvaamiseen. Punoksen kuvaaminen $x-y$-tasossa on suhteellisen yksinkertaista, mutta jotta sitä voisi käyttää kaareville pinnoille, tarvitaan koordinaattimuunnoksia varten malliavaruuden lisäksi pinnan paikallinen normaali - luulisin.
+
+Tavoitteena olisi saada varjostin toimimaan edes yhteen suuntaan kaareutuvalle pinnalle.  
+
+
+\chapter{Matemaattinen perusta}
+
+Yksinkertaisen punosta kuvaavan funktion saa kohtalaisella vaivalla määriteltyä $x-y$-tasoon. Määritellään aluksi skaalausfunktio $f_a$ $x$-akselin suuntaan.
+
+\begin{equation}
+\label{eq:warp}
+f_a(x) = \frac{xs_o}{s_a} = a,
+\end{equation}
+
+jossa $s_o$ on yleisskaalaus, $s_a$ on loimen suuntainen skaalaus ja $x$ on malliavaruuden $x$-koordinaatti. Alaindeksillä $a$ tarkoitetaan loimeen (engl. warp) liittyviä asioita. Loimiskaalauksen $s_a$ kasvaessa loimilangat siirtyvät kauemmaksi toisistaan ja punos loivenee. Yleisskaalauksen $s_o$ (engl. overall) kasvaessa koko punos skaalautuu pienemmäksi.
+
+Vastaavasti määritellään $y$-akselin suuntaan skaalaava funktio $f_e$
+
+\begin{equation}
+\label{eq:weft}
+f_e(y) = \frac{ys_o}{s_e} = e,
+\end{equation}
+
+jossa $s_e$ on kudelangan (engl. weft) leveys.
+
+Seuraavaksi määritellään funktio $f_c$ kuvaamaan kudelangan pyöreyttä
+
+\begin{equation}
+\label{eq:curvature}
+f_c(e) = r\lvert\sin{e}\rvert,
+\end{equation}
+
+jossa kerroin $r$ määrää pyöristyksen voimakkuuden. $r$:n arvolla $0$ saadaan tuotettua kulmikas kude.
+
+Funktio $f_b$ kuvaa kanttiaaltoa (engl. box), jota käytetään vuorottelemaan vierekkäisiä siniaaltoja, jotta ne näyttäisivät erillisiltä kudelangoilta
+
+\begin{equation}
+\label{eq:box}
+f_b(e) = \pi \lfloor \sin{e} \rfloor.
+\end{equation}
+
+Käyttämällä funktioita~\eqref{eq:curvature} ja~\eqref{eq:box} saadaan punoksen yhtälö $f_w$ $a$:n ja $e$:n suhteen 
+
+\begin{equation*} 
+\label{eq:weave_ae}
+f_w(a,e) = \sin{\big(a + f_b(e)\big)} + f_c(e),
+\end{equation*}
+
+joka laajennetaan $x$:n ja $y$:n suhteen syöttämällä sisään yhtälöt~\eqref{eq:warp},~\eqref{eq:weft},~\eqref{eq:curvature} ja~\eqref{eq:box}
+
+\begin{equation}
+\label{eq:weave_xy}
+f_w(x,y) = \sin{\big(\frac{xs_o}{s_a} + \pi \lfloor \sin{\frac{ys_o}{s_e}} \rfloor\big)} + r\lvert\sin{\frac{ys_o}{s_e}}\rvert.
+\end{equation}
+
+Lopuksi on hyvä vielä normalisoida yhtälö min-max -skaalauksella välille $\left[0,1\right]$, jotta sitä voidaan käyttää vaikkapa painokertoimena väreille
+
+\begin{equation}
+\label{eq:weave_norm}
+f_{wn} = \frac{f_w-\min{(f_w)}}{\max{(f_w)}-\min{(f_w)}}.
+\end{equation}
+
+\printbibliography 
+
+\end{document}
