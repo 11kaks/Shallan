@@ -10,6 +10,7 @@
 *.xml
 *.gz
 *.toc
+*.dvi
 
 # Don't ignore .tex, .cls and .bib files. They are source code.
 # Also, .pdf file can stay intact.
