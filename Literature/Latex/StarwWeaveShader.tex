@@ -3,6 +3,7 @@
 \documentclass[utf8,bachelor]{gradu3}
 \usepackage[bookmarksopen,bookmarksnumbered,linktocpage]{hyperref}
 \usepackage{mathtools}
+\usepackage{graphicx} % kuvia varten
 \addbibresource{StarwWeaveShader.bib}
 
 
@@ -38,6 +39,14 @@ Tarkoituksena on luoda varjostinohjelma, jolla voi kuvata punosta. Alunperin aja
 
 Tavoitteena olisi saada varjostin toimimaan edes yhteen suuntaan kaareutuvalle pinnalle.  
 
+Olen toteuttanut punoksen Blenderin Cycles-renderöijän node-ohjelmoinnilla kuvaamaan tatamin pintaa, joka näkyy kuvassa \ref{fig:room}. Käytin samaa tekstuuria suuremmalla skaalauksella myös kuvassa näkyvään patjaan.
+
+\begin{figure}[h] 
+	\centering
+	\includegraphics[height=8cm]{day1.png}
+	\caption{Blenderillä mallinnettu huone, jossa on käytetty punostekstuuria.}
+	\label{fig:room}
+\end{figure}
 
 \chapter{Matemaattinen perusta}
 
@@ -95,6 +104,16 @@ Lopuksi on hyvä vielä normalisoida yhtälö min-max -skaalauksella välille $\
 \label{eq:weave_norm}
 f_{wn} = \frac{f_w-\min{(f_w)}}{\max{(f_w)}-\min{(f_w)}}.
 \end{equation}
+
+Funktion $f_{wn}$ Maxima-plottaus kuvassa \ref{fig:maxima_scale} näyttää skaalausten ja pyöristyksen vaikutuskohdat. 
+
+\begin{figure}[h] 
+	\centering
+	\includegraphics[height=7cm]{weave_plot_scales_maxima_small.png}
+	\caption{Skaalausten ja pyöristyksen vaikutus funktion käyttäytymiseen.}
+	\label{fig:maxima_scale}
+\end{figure}
+
 
 \printbibliography 
 
