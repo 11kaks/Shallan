@@ -139,6 +139,8 @@
   <ItemGroup>
     <None Include="shaders\rotate.vert" />
     <None Include="shaders\SimpleFragmentShader.fragmentshader" />
+    <None Include="shaders\simpleLight.frag" />
+    <None Include="shaders\simpleLight.vert" />
     <None Include="shaders\SimpleTransform.vertexshader" />
     <None Include="shaders\SimpleVertexShader.vertexshader" />
   </ItemGroup>

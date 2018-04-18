@@ -55,5 +55,11 @@
     <None Include="shaders\SimpleVertexShader.vertexshader">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shaders\simpleLight.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\simpleLight.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

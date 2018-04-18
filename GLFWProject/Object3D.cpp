@@ -11,6 +11,8 @@ Object3D::Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 	m_projectionMatrix = projectionMatrix;
 	m_viewMatrix = viewMatrix;
 	m_modelMatrix = glm::mat4(1.0f);
+	// FIXME hard coded light position
+	m_lightPos = glm::vec3(1.0f, 1.0f, 7.0f);
 	
 	// Testing some transformations
 	/*Model = glm::rotate(Model, 30.0f, glm::vec3(0., 1., 0.));
@@ -23,7 +25,11 @@ Object3D::Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 	m_programID = LoadShaders(sVertexShaderFilePath.c_str(), sFragmentShaderFilePath.c_str());
 
 	// Get a handle for our "MVP" uniform
-	m_MatrixID = glGetUniformLocation(m_programID, "MVP");
+	m_mvpMatrixID = glGetUniformLocation(m_programID, "MVP");
+	m_modelMatrixID = glGetUniformLocation(m_programID, "M");
+	m_viewMatrixID = glGetUniformLocation(m_programID, "V");
+	m_lightPosId = glGetUniformLocation(m_programID, "LightPosition_worldspace");
+
 
 	m_timeID = glGetUniformLocation(m_programID, "inTime");
 
@@ -72,7 +78,10 @@ void Object3D::draw() {
 
 	// Send our transformation to the currently bound shader, 
 	// in the "MVP" uniform
-	glUniformMatrix4fv(m_MatrixID, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(m_mvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(m_modelMatrixID, 1, GL_FALSE, &m_modelMatrix[0][0]);
+	glUniformMatrix4fv(m_viewMatrixID, 1, GL_FALSE, &m_viewMatrix[0][0]);
+	glUniform3fv(m_lightPosId, 1, &m_lightPos[0]);
 	float time = (float)glfwGetTime() ;
 	//cout << time << endl;
 	glUniform1f(m_timeID, time);

@@ -35,12 +35,17 @@ private:
 	GLuint m_vertexBufferID;
 	GLuint m_normalBufferID;
 	GLuint m_colorBufferID;
-	GLuint m_MatrixID;
+	GLuint m_mvpMatrixID;
+	GLuint m_modelMatrixID;
+	GLuint m_projectionMatrixID;
+	GLuint m_viewMatrixID;
 	GLuint m_programID;
+	GLuint m_lightPosId;
 	GLint m_timeID;
 	glm::mat4 m_modelMatrix;
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_viewMatrix;
+	glm::vec3 m_lightPos;
 	int m_verticeCount;
 	// Default location of objects
 	std::string m_objectFilePath = "objects/";
@@ -48,8 +53,8 @@ private:
 	std::string m_shaderFilePath = "shaders/";
 	// Default name of object to be loaded
 	const std::string m_defaultObjectName = "cube.obj";
-	const std::string m_defaultVertexShaderName = "rotate.vert";
-	const std::string m_defaultFragmentShaderName = "SimpleFragmentShader.frag";
+	const std::string m_defaultVertexShaderName = "simpleLight.vert";
+	const std::string m_defaultFragmentShaderName = "simpleLight.frag";
 };
 
 #endif
