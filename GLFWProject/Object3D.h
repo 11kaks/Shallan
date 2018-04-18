@@ -49,7 +49,7 @@ private:
 	// Default name of object to be loaded
 	const std::string m_defaultObjectName = "cube.obj";
 	const std::string m_defaultVertexShaderName = "rotate.vert";
-	const std::string m_defaultFragmentShaderName = "SimpleFragmentShader.fragmentshader";
+	const std::string m_defaultFragmentShaderName = "SimpleFragmentShader.frag";
 };
 
 #endif
