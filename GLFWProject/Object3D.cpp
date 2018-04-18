@@ -12,7 +12,7 @@ Object3D::Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
 	m_viewMatrix = viewMatrix;
 	m_modelMatrix = glm::mat4(1.0f);
 	// FIXME hard coded light position
-	m_lightPos = glm::vec3(1.0f, 1.0f, 7.0f);
+	m_lightPos = glm::vec3(3.0f, 3.0f, 4.0f);
 	
 	// Testing some transformations
 	/*Model = glm::rotate(Model, 30.0f, glm::vec3(0., 1., 0.));
