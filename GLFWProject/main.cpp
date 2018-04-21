@@ -13,6 +13,7 @@
 #include "objloader.hpp"
 #include "Object3D.h"
 #include "controls.hpp"
+#include "Camera.h"
 
 using namespace std;
 
@@ -48,6 +49,16 @@ void initGLEW() {
 	}
 }
 
+
+glm::vec3 cameraPosition = glm::vec3(0, 3, 7);;
+glm::vec3 cameraDirection = glm::vec3(0.0f);
+glm::vec3 cameraUp = glm::vec3(0.f, 1.f, 0.f);
+
+float cameraFov = 45.0f;
+
+int m_windowWidth = 1280;
+int m_windowHeight = 720;
+
 GLFWwindow* initGLFWWindow() {
 	// Error callback can be registered before init
 	glfwSetErrorCallback(errorCallback);
@@ -66,7 +77,7 @@ GLFWwindow* initGLFWWindow() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(1200, 720, "GLFW window", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(m_windowWidth, m_windowHeight, "GLFW window", NULL, NULL);
 
 	if(!window) {
 		// Failed to create a window.
@@ -122,6 +133,10 @@ int main(int argc, char** argv) {
 		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 	);
 	
+
+
+	Camera * camera = new Camera(cameraPosition, cameraDirection, cameraUp, cameraFov, m_windowWidth, m_windowHeight);
+	setCamera(camera);
 	Object3D* cube = new Object3D();
 
 	while(!glfwWindowShouldClose(window)) {
@@ -133,8 +148,8 @@ int main(int argc, char** argv) {
 
 		// Compute the MVP matrix from keyboard and mouse input
 		//computeMatricesFromInputs(window);
-		cube->setProjectionMatrix(getProjectionMatrix());
-		cube->setViewMatrix(getViewMatrix());
+		cube->setProjectionMatrix(camera->getProjectionMatrix());
+		cube->setViewMatrix(camera->getViewMatrix());
 
 		cube->draw();
 
@@ -146,6 +161,7 @@ int main(int argc, char** argv) {
 	// Cleanup
 
 	delete cube;
+	delete camera;
 
 	glDeleteVertexArrays(1, &VertexArrayID);
 
