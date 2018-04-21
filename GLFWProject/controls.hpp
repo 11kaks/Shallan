@@ -11,6 +11,7 @@
 void cursor_enter_callback(GLFWwindow* window, int entered);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 void computeMatricesFromInputs(GLFWwindow* window, double dragStartXpos, double dragStartYpos);
 glm::mat4 getViewMatrix();

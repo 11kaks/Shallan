@@ -6,10 +6,10 @@ using namespace std;
 void initColorBuffer();
 
 
-Object3D::Object3D(const glm::mat4 viewMatrix, const glm::mat4 projectionMatrix) {
+Object3D::Object3D() {
 
-	m_projectionMatrix = projectionMatrix;
-	m_viewMatrix = viewMatrix;
+	m_projectionMatrix = glm::mat4();
+	m_viewMatrix = glm::mat4();
 	m_modelMatrix = glm::mat4(1.0f);
 	// FIXME hard coded light position
 	m_lightPos = glm::vec3(3.0f, 3.0f, 4.0f);

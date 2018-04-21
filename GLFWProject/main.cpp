@@ -20,10 +20,7 @@ void errorCallback(int error, const char* description) {
 	cerr << "[ERROR] - " << description << endl;
 }
 
-static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
+
 
 void initGLEW() {
 	// Init GLEW after context is set
@@ -69,7 +66,7 @@ GLFWwindow* initGLFWWindow() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(640, 480, "GLFW window", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1200, 720, "GLFW window", NULL, NULL);
 
 	if(!window) {
 		// Failed to create a window.
@@ -125,7 +122,7 @@ int main(int argc, char** argv) {
 		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 	);
 	
-	Object3D* cube = new Object3D(viewMatrix, projectionMatrix);
+	Object3D* cube = new Object3D();
 
 	while(!glfwWindowShouldClose(window)) {
 		// Setup view

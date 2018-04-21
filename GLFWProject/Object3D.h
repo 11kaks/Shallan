@@ -20,7 +20,7 @@
 class Object3D
 {
 public:
-	Object3D(const glm::mat4 viewMatrix, const glm::mat4 projectionMatrix);
+	Object3D();
 
 	~Object3D();
 

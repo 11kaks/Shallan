@@ -1,6 +1,7 @@
 
 //using namespace glm;
 
+#include <iostream>
 #include "controls.hpp"
 
 glm::mat4 ViewMatrix;
@@ -15,23 +16,28 @@ glm::mat4 getProjectionMatrix() {
 
 
 // Initial position : on +Z
-glm::vec3 position = glm::vec3(4, 3, 3);
+glm::vec3 position = glm::vec3(0, 3, 7);
 // Initial horizontal angle : toward -Z
 float horizontalAngle = 3.14f;
 // Initial vertical angle : none
-float verticalAngle = 0.0f;
+float verticalAngle = -0.4f;
 // Initial Field of View
 float initialFoV = 45.0f;
 
-float speed = 3.0f; // 3 units / second
-float mouseSpeed = 0.001f;
+//float speed = 3.0f; // 3 units / second
+float mouseSpeed = 0.003f;
 
 bool cursorInsideClientArea = false;
-
 bool leftMouseButtonDown = false;
+bool shiftDown = false;
+bool ctrlDown = false;
 
 double dragStartCursorX;
 double dragStartCursorY;
+
+glm::vec3 direction;
+glm::vec3 up;
+glm::vec3 right;
 
 /*
 Activate mouse commands only if cursor is inside the client area of the window.
@@ -48,7 +54,7 @@ void cursor_enter_callback(GLFWwindow* window, int entered) {
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
 	if(cursorInsideClientArea) {
 
-		if(button == GLFW_MOUSE_BUTTON_LEFT) {
+		if(button == GLFW_MOUSE_BUTTON_MIDDLE) {
 			if(action == GLFW_PRESS) {
 				leftMouseButtonDown = true;
 				// Set drag start positions when mous left button is pressed.
@@ -63,6 +69,26 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 	if(leftMouseButtonDown) {
 		computeMatricesFromInputs(window, xpos, ypos);
+	}
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+	if(key == GLFW_KEY_LEFT_SHIFT) {
+		if(action == GLFW_PRESS || action == GLFW_REPEAT) {
+			shiftDown = true;
+		} else {
+			shiftDown = false;
+		}
+	}
+	if(key == GLFW_KEY_LEFT_CONTROL) {
+		if(action == GLFW_PRESS || action == GLFW_REPEAT) {
+			ctrlDown = true;
+		} else {
+			ctrlDown = false;
+		}
 	}
 }
 
@@ -87,68 +113,60 @@ void computeMatricesFromInputs(GLFWwindow* window, double xpos, double ypos) {
 	// Reset mouse position for next frame
 	//glfwSetCursorPos(window, screenWidth / 2, screenHeight / 2);
 
-	// Compute new orientation
-	horizontalAngle += mouseSpeed * float(dragStartCursorX - xpos);
-	verticalAngle += mouseSpeed * float(dragStartCursorY - ypos);
+
+	float deltaX = dragStartCursorX - xpos;
+	float deltaY = dragStartCursorY - ypos;
+
+	// Move camera if left shift is down
+	if(shiftDown) {
+
+		position += right * mouseSpeed * deltaX;
+		position -= up * mouseSpeed * deltaY;
+
+	} else if(ctrlDown) {
+		// Zooming control on x-axis is half as fast as along y-axis
+		position -= direction * mouseSpeed * 1.5f * deltaX;
+		position += direction * mouseSpeed * 3.0f * deltaY;
+	} else {
+		// Rotate camera
+
+		// Compute new orientation
+		horizontalAngle += mouseSpeed * deltaX;
+		verticalAngle += mouseSpeed * deltaY;
+
+
+		// Right vector
+		right = glm::vec3(
+			sin(horizontalAngle - 3.14f / 2.0f),
+			0,
+			cos(horizontalAngle - 3.14f / 2.0f)
+		); 
+
+		// Direction : Spherical coordinates to Cartesian coordinates conversion
+		direction = glm::vec3(
+			cos(verticalAngle) * sin(horizontalAngle),
+			sin(verticalAngle),
+			cos(verticalAngle) * cos(horizontalAngle)
+		);
+
+		// Up vector
+		up = glm::cross(right, direction);
+	}
 
 	// Next poll needs to have the old coordinates as starting point.
 	dragStartCursorX = xpos;
 	dragStartCursorY = ypos;
 
-	// Direction : Spherical coordinates to Cartesian coordinates conversion
-	glm::vec3 direction(
-		cos(verticalAngle) * sin(horizontalAngle),
-		sin(verticalAngle),
-		cos(verticalAngle) * cos(horizontalAngle)
-	);
-
-	// Right vector
-	glm::vec3 right = glm::vec3(
-		sin(horizontalAngle - 3.14f / 2.0f),
-		0,
-		cos(horizontalAngle - 3.14f / 2.0f)
-	);
-
-	// Up vector
-	glm::vec3 up = glm::cross(right, direction);
-
-	// Move forward
-	//if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-	//	position += direction * deltaTime * speed;
-	//}
-	//// Move backward
-	//if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-	//	position -= direction * deltaTime * speed;
-	//}
-	//// Strafe right
-	//if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-	//	position += right * deltaTime * speed;
-	//}
-	//// Strafe left
-	//if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-	//	position -= right * deltaTime * speed;
-	//}
-
-	// Camera matrix
-	//glm::mat4 viewMatrix = glm::lookAt(
-	//	glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
-	//	glm::vec3(0, 0, 0), // and looks at the origin
-	//	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-	//);
-
-
-	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
+	int windowWidth;
+	int windowHeight;
+	glfwGetWindowSize(window, &windowWidth, &windowHeight);
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.1f, 100.0f);
+	ProjectionMatrix = glm::perspective(glm::radians(initialFoV), float(windowWidth / windowHeight), 0.1f, 100.0f);
 	// Camera matrix
 	ViewMatrix = glm::lookAt(
 		position,           // Camera is here
 		position + direction, // and looks here : at the same position, plus "direction"
 		up                  // Head is up (set to 0,-1,0 to look upside-down)
 	);
-
-	// For the next frame, the "last time" will be "now"
-	//lastTime = currentTime;
-
 }
