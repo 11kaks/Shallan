@@ -20,7 +20,7 @@
 class Object3D
 {
 public:
-	Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+	Object3D(const glm::mat4 viewMatrix, const glm::mat4 projectionMatrix);
 
 	~Object3D();
 
@@ -29,6 +29,18 @@ public:
 	}
 
 	void draw();
+
+	void setProjectionMatrix(const glm::mat4 newProjectionMatrix) {
+		m_projectionMatrix = newProjectionMatrix;
+	}
+
+	void setViewMatrix(const glm::mat4 newViewMatrix) {
+		m_viewMatrix = newViewMatrix;
+	}
+
+	void setModelMatrix(const glm::mat4 newModelMatrix) {
+		m_modelMatrix = newModelMatrix;
+	}
 
 private:
 	// This will identify our vertex buffer

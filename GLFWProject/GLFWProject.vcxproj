@@ -126,12 +126,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="controls.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="objloader.cpp" />
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="controls.hpp" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="objloader.hpp" />
     <ClInclude Include="shader.hpp" />

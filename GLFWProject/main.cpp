@@ -12,6 +12,7 @@
 #include "shader.hpp"
 #include "objloader.hpp"
 #include "Object3D.h"
+#include "controls.hpp"
 
 using namespace std;
 
@@ -78,6 +79,9 @@ GLFWwindow* initGLFWWindow() {
 
 	// Register key callback
 	glfwSetKeyCallback(window, keyCallback);
+	glfwSetCursorEnterCallback(window, cursor_enter_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetCursorPosCallback(window, cursor_position_callback);
 
 	// Set OpenGL context
 	glfwMakeContextCurrent(window);
@@ -129,6 +133,11 @@ int main(int argc, char** argv) {
 
 		// Set swap interval other than 0 to prevent tearing
 		//glfwSwapInterval(1);
+
+		// Compute the MVP matrix from keyboard and mouse input
+		//computeMatricesFromInputs(window);
+		cube->setProjectionMatrix(getProjectionMatrix());
+		cube->setViewMatrix(getViewMatrix());
 
 		cube->draw();
 

@@ -30,6 +30,9 @@
     <ClCompile Include="Object3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="controls.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.hpp">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Object3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="controls.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

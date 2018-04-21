@@ -6,7 +6,7 @@ using namespace std;
 void initColorBuffer();
 
 
-Object3D::Object3D(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
+Object3D::Object3D(const glm::mat4 viewMatrix, const glm::mat4 projectionMatrix) {
 
 	m_projectionMatrix = projectionMatrix;
 	m_viewMatrix = viewMatrix;
