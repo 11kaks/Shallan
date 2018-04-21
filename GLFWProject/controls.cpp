@@ -1,6 +1,7 @@
 #include <iostream>
 #include "controls.hpp"
 
+
 //float speed = 3.0f; // 3 units / second
 float mouseSpeed = 0.003f;
 
@@ -17,6 +18,12 @@ Camera * camera;
 
 void setCamera(Camera *newCamera) {
 	camera = newCamera;
+}
+
+Object3D * object3d;
+
+void setObject(Object3D *object) {
+	object3d = object;
 }
 
 /*
@@ -69,6 +76,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		} else {
 			ctrlDown = false;
 		}
+	}
+	if(key == GLFW_KEY_R && action == GLFW_PRESS) {
+		std::cout << "Reloading shaders..." << std::endl;;
+		object3d->reloadShaders();
+		std::cout << "Reloading shaders done." << std::endl;
 	}
 }
 

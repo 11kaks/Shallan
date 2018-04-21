@@ -1,5 +1,8 @@
 #include <iostream>
 #include <vector>
+// For fps counter
+#include <sstream>
+
 
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate..
 
@@ -12,10 +15,12 @@
 #include "shader.hpp"
 #include "objloader.hpp"
 #include "Object3D.h"
-#include "controls.hpp"
 #include "Camera.h"
+#include "controls.hpp"
 
 using namespace std;
+
+void showFPS(GLFWwindow *pWindow);
 
 void errorCallback(int error, const char* description) {
 	cerr << "[ERROR] - " << description << endl;
@@ -138,6 +143,7 @@ int main(int argc, char** argv) {
 	Camera * camera = new Camera(cameraPosition, cameraDirection, cameraUp, cameraFov, m_windowWidth, m_windowHeight);
 	setCamera(camera);
 	Object3D* cube = new Object3D();
+	setObject(cube);
 
 	while(!glfwWindowShouldClose(window)) {
 		// Setup view
@@ -155,6 +161,7 @@ int main(int argc, char** argv) {
 
 		// Swap and check events
 		glfwSwapBuffers(window);
+		showFPS(window);
 		glfwPollEvents();
 	}
 
@@ -169,4 +176,30 @@ int main(int argc, char** argv) {
 	glfwTerminate();
 
 	return 0;
+}
+
+// Time of last render.
+double lastTime = 0.0;
+unsigned nbFrames = 0;
+
+/*
+Show fps in window title. 
+*/
+void showFPS(GLFWwindow *pWindow) {
+	// Measure speed
+	double currentTime = glfwGetTime();
+	double delta = currentTime - lastTime;
+	nbFrames++;
+	if(delta >= 1.0) { // If last cout was more than 1 sec ago
+
+		double fps = double(nbFrames) / delta;
+		std::ostringstream strs;
+		strs << "FPS - "  << fps;
+		std::string str = strs.str();
+
+		glfwSetWindowTitle(pWindow, str.c_str());
+
+		nbFrames = 0;
+		lastTime = currentTime;
+	}
 }

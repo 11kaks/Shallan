@@ -20,9 +20,7 @@ Object3D::Object3D() {
 	Model = glm::scale(Model, glm::vec3(3.));*/
 
 	// Create and compile our GLSL program from the shaders
-	string sVertexShaderFilePath = m_shaderFilePath + m_defaultVertexShaderName;
-	string sFragmentShaderFilePath = m_shaderFilePath + m_defaultFragmentShaderName;
-	m_programID = LoadShaders(sVertexShaderFilePath.c_str(), sFragmentShaderFilePath.c_str());
+	reloadShaders();
 
 	// Get a handle for our "MVP" uniform
 	m_mvpMatrixID = glGetUniformLocation(m_programID, "MVP");
@@ -128,6 +126,12 @@ void Object3D::draw() {
 	glDrawArrays(GL_TRIANGLES, 0, m_verticeCount); // Starting from vertex 0; 3*12 vertices total -> 6 sided cube
 	glDisableVertexAttribArray(0);
 
+}
+
+void Object3D::reloadShaders() {
+	string sVertexShaderFilePath = m_shaderFilePath + m_defaultVertexShaderName;
+	string sFragmentShaderFilePath = m_shaderFilePath + m_defaultFragmentShaderName;
+	m_programID = LoadShaders(sVertexShaderFilePath.c_str(), sFragmentShaderFilePath.c_str());
 }
 
 Object3D::~Object3D() {

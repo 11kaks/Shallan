@@ -30,6 +30,8 @@ public:
 
 	void draw();
 
+	void reloadShaders();
+
 	void setProjectionMatrix(const glm::mat4 newProjectionMatrix) {
 		m_projectionMatrix = newProjectionMatrix;
 	}

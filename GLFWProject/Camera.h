@@ -48,22 +48,20 @@ private:
 	float m_verticalAngle = -0.4f;
 	glm::mat4 m_viewMatrix;
 	glm::mat4 m_projectionMatrix;
-
+	// Window width (for aspect ratio).
 	int m_windowWidth;
+	// Window height (for aspect ratio).
 	int m_windowHeight;
 	// Camera field of view.
-	float m_fov;
+	float m_fov = 45.0f;
+	// Near clipping distance.
 	float m_nearClip = 0.1f;
+	// Far clipping distance.
 	float m_farClip = 100.0f;
 
-	void updateMatrices() {
-		m_projectionMatrix = glm::perspective(glm::radians(m_fov), float(m_windowWidth) / float(m_windowHeight), m_nearClip, m_farClip);
-
-		m_viewMatrix = glm::lookAt(
-			m_position,           // Camera is here
-			m_position + m_direction, // and looks here : at the same position, plus "direction"
-			m_up                  // Head is up (set to 0,-1,0 to look upside-down)
-		);
-	}
+	/*
+	Update view and projection matrix.
+	*/
+	void updateMatrices();
 };
 
