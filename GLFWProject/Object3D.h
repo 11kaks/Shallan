@@ -56,6 +56,7 @@ public:
 	*/
 	void setVertexShaderName(std::string name) {
 		m_vertexShaderName = name;
+		reloadShaders();
 	}
 
 	/*
@@ -63,6 +64,7 @@ public:
 	*/
 	void setFragmentShaderName(std::string name) {
 		m_fragmentShaderName = name;
+		reloadShaders();
 	}
 private:
 	// This will identify our vertex buffer

@@ -95,15 +95,15 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 void computeMatricesFromInputs(GLFWwindow* window, double xpos, double ypos) {
 	
-	float deltaX = dragStartCursorX - xpos;
-	float deltaY = dragStartCursorY - ypos;
+	float deltaX = (float)dragStartCursorX - (float)xpos;
+	float deltaY = (float)dragStartCursorY - (float)ypos;
 
 	// Move camera if left shift is down
 	if(shiftDown) {
 		scene->getCamera()->move(mouseSpeed * deltaX, mouseSpeed * deltaY);	
 	} else if(ctrlDown) {
 		// Zooming control on x-axis is half as fast as along y-axis
-		scene->getCamera()->zoom(mouseSpeed * deltaX * 1.5f , mouseSpeed * 3.0 * deltaY);
+		scene->getCamera()->zoom(mouseSpeed * deltaX * 1.5f , mouseSpeed * 3.0f * deltaY);
 	} else {
 		scene->getCamera()->rotate(mouseSpeed * deltaX, mouseSpeed * deltaY);
 	}

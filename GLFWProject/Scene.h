@@ -4,6 +4,7 @@
 
 #include "Object3D.h"
 #include "Camera.h"
+#include "Light.h"
 
 
 class Scene
@@ -34,6 +35,14 @@ public:
 		m_camera = camera;
 	}
 
+	void setLight(Light * light) {
+		m_light = light;
+	}
+
+	Light * getLight() {
+		return m_light;
+	}
+
 	Camera * getCamera() {
 		return m_camera;
 	}
@@ -49,5 +58,6 @@ private:
 
 	std::vector<Object3D*> m_objectList = std::vector<Object3D*>();
 	Camera * m_camera;
+	Light * m_light;
 };
 

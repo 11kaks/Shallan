@@ -144,11 +144,15 @@ int main(int argc, char** argv) {
 	Camera * camera = new Camera(cameraPosition, 3.14f, -0.4f, cameraUp, cameraFov, m_windowWidth, m_windowHeight);
 	//setCamera(camera);
 	Object3D* cube = new Object3D();
+	cube->setVertexShaderName("weave");
+	cube->setFragmentShaderName("weave");
 	//setObject(cube);
+	Light * light = new Light();
 	Scene * scene = new Scene();
 	setScene(scene);
 	scene->addObject(cube);
 	scene->setCamera(camera);
+	scene->setLight(light);
 
 	while(!glfwWindowShouldClose(window)) {
 		// Setup view
@@ -176,6 +180,7 @@ int main(int argc, char** argv) {
 
 	delete cube;
 	delete camera;
+	delete light;
 
 	glDeleteVertexArrays(1, &VertexArrayID);
 
