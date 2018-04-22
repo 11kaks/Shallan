@@ -10,6 +10,11 @@ void Camera::rotate(float deltaX, float deltaY) {
 	// Compute new orientation
 	m_horizontalAngle += deltaX;
 	m_verticalAngle += deltaY;
+	calculateDirectionFromAngles();
+	updateMatrices();
+}
+
+void Camera::calculateDirectionFromAngles() {
 
 	// Right vector
 	m_right = glm::vec3(
@@ -27,7 +32,6 @@ void Camera::rotate(float deltaX, float deltaY) {
 
 	// Up vector
 	m_up = glm::cross(m_right, m_direction);
-	updateMatrices();
 }
 
 void Camera::move(float deltaX, float deltaY) {

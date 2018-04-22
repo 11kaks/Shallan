@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="13.0">
+<diagram program="umlet" version="14.2">
   <zoom_level>10</zoom_level>
   <element>
-    <type>com.umlet.element.Class</type>
+    <type>com.baselet.element.old.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>50</y>
-      <w>150</w>
-      <h>80</h>
+      <x>130</x>
+      <y>340</y>
+      <w>210</w>
+      <h>110</h>
     </coordinates>
     <panel_attributes>Object3D
 --
-Compile shaders 
-and draw</panel_attributes>
++ setObjectName()
++ setVertexShaderName()
++ setFragmentShaderName()
++ draw()</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Class</type>
+    <type>com.baselet.element.old.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>160</y>
+      <x>190</x>
+      <y>510</y>
       <w>150</w>
       <h>60</h>
     </coordinates>
@@ -30,24 +32,24 @@ file into vertexbuffer</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Class</type>
+    <type>com.baselet.element.old.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>260</y>
+      <x>190</x>
+      <y>620</y>
       <w>150</w>
       <h>70</h>
     </coordinates>
     <panel_attributes>ShaderLoader
 --
-Loads shaders 
-from file</panel_attributes>
+Loads, compiles and 
+links shaders from file</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Class</type>
+    <type>com.baselet.element.old.element.Class</type>
     <coordinates>
-      <x>260</x>
-      <y>60</y>
+      <x>460</x>
+      <y>10</y>
       <w>130</w>
       <h>70</h>
     </coordinates>
@@ -58,70 +60,72 @@ and settings</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Class</type>
+    <type>com.baselet.element.old.element.Class</type>
     <coordinates>
-      <x>450</x>
-      <y>130</y>
+      <x>650</x>
+      <y>80</y>
       <w>150</w>
       <h>90</h>
     </coordinates>
     <panel_attributes>Control
+--
+Not a real class!
 --
 Handle mouse and 
 keyboard events</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Class</type>
+    <type>com.baselet.element.old.element.Class</type>
     <coordinates>
-      <x>450</x>
-      <y>60</y>
-      <w>110</w>
+      <x>650</x>
+      <y>10</y>
+      <w>140</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>Display
 --
-Windowing</panel_attributes>
+Windowing (GLFW)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Relation</type>
+    <type>com.baselet.element.old.element.Relation</type>
     <coordinates>
-      <x>170</x>
-      <y>70</y>
-      <w>110</w>
-      <h>50</h>
+      <x>350</x>
+      <y>20</y>
+      <w>130</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>30;30;90;30</additional_attributes>
+    <additional_attributes>30;50;110;30</additional_attributes>
   </element>
   <element>
-    <type>com.umlet.element.Relation</type>
+    <type>com.baselet.element.old.element.Relation</type>
     <coordinates>
-      <x>90</x>
-      <y>100</y>
+      <x>230</x>
+      <y>420</y>
       <w>50</w>
-      <h>80</h>
+      <h>110</h>
     </coordinates>
     <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>30;30;30;60</additional_attributes>
+    <additional_attributes>30;30;30;90</additional_attributes>
   </element>
   <element>
-    <type>com.umlet.element.Relation</type>
+    <type>com.baselet.element.old.element.Relation</type>
     <coordinates>
-      <x>90</x>
-      <y>190</y>
+      <x>230</x>
+      <y>540</y>
       <w>50</w>
-      <h>90</h>
+      <h>100</h>
     </coordinates>
     <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>30;30;30;70</additional_attributes>
+    <additional_attributes>30;30;30;80</additional_attributes>
   </element>
   <element>
-    <type>com.umlet.element.Relation</type>
+    <type>com.baselet.element.old.element.Relation</type>
     <coordinates>
-      <x>360</x>
-      <y>60</y>
+      <x>560</x>
+      <y>10</y>
       <w>110</w>
       <h>60</h>
     </coordinates>
@@ -129,14 +133,108 @@ Windowing</panel_attributes>
     <additional_attributes>30;40;90;30</additional_attributes>
   </element>
   <element>
-    <type>com.umlet.element.Relation</type>
+    <type>com.baselet.element.old.element.Relation</type>
     <coordinates>
-      <x>360</x>
-      <y>80</y>
+      <x>560</x>
+      <y>30</y>
       <w>110</w>
       <h>90</h>
     </coordinates>
     <panel_attributes>lt=-</panel_attributes>
     <additional_attributes>30;30;90;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.Class</type>
+    <coordinates>
+      <x>290</x>
+      <y>70</y>
+      <w>150</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>Scene
+--
+Contain objects
+and lights.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.Class</type>
+    <coordinates>
+      <x>350</x>
+      <y>340</y>
+      <w>150</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Light
+--
+- position : vec3
+- power : float
+- color : vec3
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>370</x>
+      <y>250</y>
+      <w>50</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..n
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>300</x>
+      <y>250</y>
+      <w>60</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..n
+m2=1</panel_attributes>
+    <additional_attributes>20.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.Class</type>
+    <coordinates>
+      <x>520</x>
+      <y>340</y>
+      <w>160</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>Camera
+--
+Handle view and 
+projection matrices.
+--
+- position : vec3
+- vertical angle
+- horizontal angle
+--
++ rotate()
++ move()
++ zoom()
++ getViewMatrix()
++ getProjectionMatrix() 
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>250</y>
+      <w>170</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;150.0;90.0</additional_attributes>
   </element>
 </diagram>

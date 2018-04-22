@@ -6,7 +6,7 @@
 float mouseSpeed = 0.003f;
 
 bool cursorInsideClientArea = false;
-bool leftMouseButtonDown = false;
+bool mouseMiddleDown = false;
 bool shiftDown = false;
 bool ctrlDown = false;
 
@@ -43,18 +43,18 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 		if(button == GLFW_MOUSE_BUTTON_MIDDLE) {
 			if(action == GLFW_PRESS) {
-				leftMouseButtonDown = true;
+				mouseMiddleDown = true;
 				// Set drag start positions when mous left button is pressed.
 				glfwGetCursorPos(window, &dragStartCursorX, &dragStartCursorY);
 			} else {
-				leftMouseButtonDown = false;
+				mouseMiddleDown = false;
 			}
 		}
 	}
 }
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
-	if(leftMouseButtonDown) {
+	if(mouseMiddleDown) {
 		computeMatricesFromInputs(window, xpos, ypos);
 	}
 }

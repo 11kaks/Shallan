@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
 	
 
 
-	Camera * camera = new Camera(cameraPosition, cameraDirection, cameraUp, cameraFov, m_windowWidth, m_windowHeight);
+	Camera * camera = new Camera(cameraPosition, 3.14f, -0.4f, cameraUp, cameraFov, m_windowWidth, m_windowHeight);
 	setCamera(camera);
 	Object3D* cube = new Object3D();
 	setObject(cube);

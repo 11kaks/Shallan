@@ -10,6 +10,9 @@ class Camera
 {
 public:
 
+	/*
+	Use the one with angles instead.
+	*/
 	Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up, float fieldOfView, int windowWidth, int windowHeight) {
 		m_position = position;
 		m_direction = direction;
@@ -19,6 +22,16 @@ public:
 		m_fov = fieldOfView;
 		updateMatrices();
 	}
+	Camera(glm::vec3 position, float vertAngle, float horAngle, glm::vec3 up, float fieldOfView, int windowWidth, int windowHeight) {
+		m_position = position;
+		calculateDirectionFromAngles();
+		m_up = up;
+		m_windowWidth = windowWidth;
+		m_windowHeight = windowHeight;
+		m_fov = fieldOfView;
+		updateMatrices();
+	}
+
 	~Camera();
 
 	void zoom(float deltaX, float deltaY);
@@ -63,5 +76,13 @@ private:
 	Update view and projection matrix.
 	*/
 	void updateMatrices();
+
+	/*
+	Calculates new direction, right and up vectors.
+	
+	Take care to update m_horizontalAngle and m_verticalAngle
+	before calling this.
+	*/
+	void calculateDirectionFromAngles();
 };
 

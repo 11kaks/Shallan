@@ -1,10 +1,8 @@
 #include "Object3D.h"
 
-
 using namespace std;
 
 void initColorBuffer();
-
 
 Object3D::Object3D() {
 
@@ -13,6 +11,10 @@ Object3D::Object3D() {
 	m_modelMatrix = glm::mat4(1.0f);
 	// FIXME hard coded light position
 	m_lightPos = glm::vec3(3.0f, 3.0f, 4.0f);
+
+	m_objectName = m_defaultObjectName;
+	m_vertexShaderName = m_defaultVertexShaderName;
+	m_fragmentShaderName = m_defaultFragmentShaderName;
 	
 	// Testing some transformations
 	/*Model = glm::rotate(Model, 30.0f, glm::vec3(0., 1., 0.));
@@ -37,12 +39,12 @@ Object3D::Object3D() {
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals; // Won't be used at the moment.
 
-	std::string objectFilePath = m_objectFilePath + m_defaultObjectName;
+	std::string objectFilePath = m_objectFilePath + m_objectName + m_objectFileEnding;
 	bool res = loadOBJ(objectFilePath.c_str(), vertices, uvs, normals);
 
 	if(res) {
 		m_verticeCount = vertices.size();
-		cout << "Vertice count " << m_verticeCount << endl;
+		//cout << "Vertice count " << m_verticeCount << endl;
 	} else {
 		throw 1;
 	}
@@ -129,8 +131,8 @@ void Object3D::draw() {
 }
 
 void Object3D::reloadShaders() {
-	string sVertexShaderFilePath = m_shaderFilePath + m_defaultVertexShaderName;
-	string sFragmentShaderFilePath = m_shaderFilePath + m_defaultFragmentShaderName;
+	string sVertexShaderFilePath = m_shaderFilePath + m_vertexShaderName + m_vertexShaderFileEndig;
+	string sFragmentShaderFilePath = m_shaderFilePath + m_fragmentShaderName + m_fragmentShaderFileEnding;
 	m_programID = LoadShaders(sVertexShaderFilePath.c_str(), sFragmentShaderFilePath.c_str());
 }
 

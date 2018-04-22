@@ -20,6 +20,7 @@
 class Object3D
 {
 public:
+
 	Object3D();
 
 	~Object3D();
@@ -44,6 +45,25 @@ public:
 		m_modelMatrix = newModelMatrix;
 	}
 
+	/*
+	@param name as it is in file system without .obj ending (it will be added).
+	*/
+	void setObjectName(std::string name) {
+		m_objectName = name;
+	}
+	/*
+	@param name as it is in file system without .vert ending (it will be added).
+	*/
+	void setVertexShaderName(std::string name) {
+		m_vertexShaderName = name;
+	}
+
+	/*
+	@param name as it is in file system without .frag ending (it will be added).
+	*/
+	void setFragmentShaderName(std::string name) {
+		m_fragmentShaderName = name;
+	}
 private:
 	// This will identify our vertex buffer
 	GLuint m_vertexBufferID;
@@ -61,14 +81,23 @@ private:
 	glm::mat4 m_viewMatrix;
 	glm::vec3 m_lightPos;
 	int m_verticeCount;
-	// Default location of objects
+	// Location of objects
 	std::string m_objectFilePath = "objects/";
-	// Default location of shaders
+	// Location of shaders
 	std::string m_shaderFilePath = "shaders/";
 	// Default name of object to be loaded
-	const std::string m_defaultObjectName = "cube.obj";
-	const std::string m_defaultVertexShaderName = "simpleLight.vert";
-	const std::string m_defaultFragmentShaderName = "simpleLight.frag";
+	const std::string m_defaultObjectName = "cube";
+	const std::string m_defaultVertexShaderName = "simpleLight";
+	const std::string m_defaultFragmentShaderName = "simpleLight";
+	const std::string m_objectFileEnding = ".obj";
+	const std::string m_vertexShaderFileEndig = ".vert";
+	const std::string m_fragmentShaderFileEnding = ".frag";
+	// Object name to be used in loading from file. Does not contain the file ending.
+	std::string m_objectName;
+	// Vertex shader name to be used in loading from file. Does not contain the file ending.
+	std::string m_vertexShaderName;
+	// Fragment shader name to be used in loading from file. Does not contain the .obj file ending.
+	std::string m_fragmentShaderName;
 };
 
 #endif
