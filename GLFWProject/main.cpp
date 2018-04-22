@@ -17,6 +17,7 @@
 #include "Object3D.h"
 #include "Camera.h"
 #include "controls.hpp"
+#include "Scene.h"
 
 using namespace std;
 
@@ -141,9 +142,13 @@ int main(int argc, char** argv) {
 
 
 	Camera * camera = new Camera(cameraPosition, 3.14f, -0.4f, cameraUp, cameraFov, m_windowWidth, m_windowHeight);
-	setCamera(camera);
+	//setCamera(camera);
 	Object3D* cube = new Object3D();
-	setObject(cube);
+	//setObject(cube);
+	Scene * scene = new Scene();
+	setScene(scene);
+	scene->addObject(cube);
+	scene->setCamera(camera);
 
 	while(!glfwWindowShouldClose(window)) {
 		// Setup view
@@ -154,10 +159,12 @@ int main(int argc, char** argv) {
 
 		// Compute the MVP matrix from keyboard and mouse input
 		//computeMatricesFromInputs(window);
-		cube->setProjectionMatrix(camera->getProjectionMatrix());
-		cube->setViewMatrix(camera->getViewMatrix());
+		/*cube->setProjectionMatrix(camera->getProjectionMatrix());
+		cube->setViewMatrix(camera->getViewMatrix());*/
 
-		cube->draw();
+		//cube->draw();
+
+		scene->draw();
 
 		// Swap and check events
 		glfwSwapBuffers(window);

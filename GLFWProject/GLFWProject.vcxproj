@@ -131,6 +131,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="objloader.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +139,7 @@
     <ClInclude Include="controls.hpp" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="objloader.hpp" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="shader.hpp" />
   </ItemGroup>
   <ItemGroup>

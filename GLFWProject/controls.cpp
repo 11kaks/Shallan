@@ -1,8 +1,6 @@
 #include <iostream>
 #include "controls.hpp"
 
-
-//float speed = 3.0f; // 3 units / second
 float mouseSpeed = 0.003f;
 
 bool cursorInsideClientArea = false;
@@ -13,17 +11,28 @@ bool ctrlDown = false;
 double dragStartCursorX;
 double dragStartCursorY;
 
+
+//Camera * camera;
+//
+//void setCamera(Camera *newCamera) {
+//	camera = newCamera;
+//}
+
+//Object3D * object3d;
+//
+//void setObject(Object3D *object) {
+//	object3d = object;
+//}
+
+
 // This is ugly and propably plain wrong. 
-Camera * camera;
+Scene * scene;
 
-void setCamera(Camera *newCamera) {
-	camera = newCamera;
-}
-
-Object3D * object3d;
-
-void setObject(Object3D *object) {
-	object3d = object;
+/*
+Must be called from main to control scene.
+*/
+void setScene(Scene * newScene) {
+	scene = newScene;
 }
 
 /*
@@ -79,7 +88,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	}
 	if(key == GLFW_KEY_R && action == GLFW_PRESS) {
 		std::cout << "Reloading shaders..." << std::endl;;
-		object3d->reloadShaders();
+		scene->reloadShaders();
 		std::cout << "Reloading shaders done." << std::endl;
 	}
 }
@@ -91,12 +100,12 @@ void computeMatricesFromInputs(GLFWwindow* window, double xpos, double ypos) {
 
 	// Move camera if left shift is down
 	if(shiftDown) {
-		camera->move(mouseSpeed * deltaX, mouseSpeed * deltaY);	
+		scene->getCamera()->move(mouseSpeed * deltaX, mouseSpeed * deltaY);	
 	} else if(ctrlDown) {
 		// Zooming control on x-axis is half as fast as along y-axis
-		camera->zoom(mouseSpeed * deltaX * 1.5f , mouseSpeed * 3.0 * deltaY);
+		scene->getCamera()->zoom(mouseSpeed * deltaX * 1.5f , mouseSpeed * 3.0 * deltaY);
 	} else {
-		camera->rotate(mouseSpeed * deltaX, mouseSpeed * deltaY);
+		scene->getCamera()->rotate(mouseSpeed * deltaX, mouseSpeed * deltaY);
 	}
 
 	// Next poll needs to have the old coordinates as starting point.
