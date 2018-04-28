@@ -56,7 +56,7 @@ void initGLEW() {
 }
 
 
-glm::vec3 cameraPosition = glm::vec3(0, 3, 7);;
+glm::vec3 cameraPosition = glm::vec3(0, 3, 7);
 glm::vec3 cameraDirection = glm::vec3(0.0f);
 glm::vec3 cameraUp = glm::vec3(0.f, 1.f, 0.f);
 

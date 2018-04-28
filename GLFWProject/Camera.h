@@ -45,6 +45,9 @@ public:
 	glm::mat4 getProjectionMatrix() {
 		return m_projectionMatrix;
 	}
+	glm::vec3 getPositionWorldSpace() {
+		return m_position;
+	}
 
 private:
 	// Camera position.

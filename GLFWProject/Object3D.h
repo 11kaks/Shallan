@@ -77,11 +77,13 @@ private:
 	GLuint m_viewMatrixID;
 	GLuint m_programID;
 	GLuint m_lightPosId;
+	GLuint m_cameraPosId;
 	GLint m_timeID;
 	glm::mat4 m_modelMatrix;
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_viewMatrix;
 	glm::vec3 m_lightPos;
+	glm::vec3 m_cameraPos;
 	int m_verticeCount;
 	// Location of objects
 	std::string m_objectFilePath = "objects/";

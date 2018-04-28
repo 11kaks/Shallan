@@ -11,6 +11,7 @@ uniform mat4 MVP;
 uniform mat4 M;
 uniform mat4 V;
 uniform vec3 LightPosition_worldspace;
+uniform vec3 CameraPosition_worldspace;
 
 // Outputs
 out vec3 EyeDirection_cameraspace;
@@ -25,7 +26,30 @@ out vec3 MaterialDiffuseColor;
 out vec3 posMS;
 out vec3 normMS;
 
+
+out VS_OUT {
+    vec3 FragPosWorldSpace;
+    vec3 LightPosTangentSpace;
+    vec3 ViewPosTangentSpace;
+    vec3 FragPosTangentSpace;
+} vs_out;
+
 // -------
+
+
+vec3 normal(){
+	return vertexNormal_modelspace;
+}
+
+vec3 tangent(){
+	return cross(vertexNormal_modelspace,vec3(1,0,0));
+}
+
+vec3 bitangent(){
+	return cross(vertexNormal_modelspace,tangent());
+}
+
+
 
 // Super hacky version!
 
@@ -35,6 +59,25 @@ void main (void){
 	normMS = vertexNormal_modelspace;
 
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
+
+
+//##############################################
+
+	vs_out.FragPosWorldSpace   = vec3(M * vec4(vertexPosition_modelspace, 1.0));
+    
+    vec3 T   = normalize(mat3(M) * tangent());
+    vec3 B   = normalize(mat3(M) * bitangent());
+    vec3 N   = normalize(mat3(M) * normal());
+    mat3 TBN = transpose(mat3(T, B, N));
+
+    vs_out.LightPosTangentSpace = TBN * LightPosition_worldspace;
+    vs_out.ViewPosTangentSpace  = TBN * CameraPosition_worldspace;
+    vs_out.FragPosTangentSpace  = TBN * vs_out.FragPosWorldSpace;
+
+
+//##############################################
+
+
 
 	// Position of the vertex, in worldspace : M * position
 	Position_worldspace = (M * vec4(vertexPosition_modelspace,1)).xyz;
