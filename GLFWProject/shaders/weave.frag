@@ -83,4 +83,5 @@ void main (void){
 	float cosTheta = clamp( dot( n,l ), 0,1 );
 
 	color = MaterialAmbientColor + MaterialDiffuseColor * LightColor * cosTheta;
+	//color = vec3(1,1,1);
 }

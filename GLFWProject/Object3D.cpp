@@ -12,8 +12,6 @@ Object3D::Object3D() {
 	// FIXME hard coded light position
 	m_lightPos = glm::vec3(3.0f, 3.0f, 4.0f);
 
-	m_cameraPos = glm::vec3(0.f, 3.f, 7.f);
-
 	m_objectName = m_defaultObjectName;
 	m_vertexShaderName = m_defaultVertexShaderName;
 	m_fragmentShaderName = m_defaultFragmentShaderName;
@@ -31,7 +29,6 @@ Object3D::Object3D() {
 	m_modelMatrixID = glGetUniformLocation(m_programID, "M");
 	m_viewMatrixID = glGetUniformLocation(m_programID, "V");
 	m_lightPosId = glGetUniformLocation(m_programID, "LightPosition_worldspace");
-	m_cameraPosId = glGetUniformLocation(m_programID, "CameraPosition_worldspace");
 
 
 	m_timeID = glGetUniformLocation(m_programID, "inTime");
@@ -85,7 +82,6 @@ void Object3D::draw() {
 	glUniformMatrix4fv(m_modelMatrixID, 1, GL_FALSE, &m_modelMatrix[0][0]);
 	glUniformMatrix4fv(m_viewMatrixID, 1, GL_FALSE, &m_viewMatrix[0][0]);
 	glUniform3fv(m_lightPosId, 1, &m_lightPos[0]);
-	glUniform3fv(m_cameraPosId, 1, &m_cameraPos[0]);
 	float time = (float)glfwGetTime() ;
 	//cout << time << endl;
 	glUniform1f(m_timeID, time);

@@ -77,20 +77,18 @@ private:
 	GLuint m_viewMatrixID;
 	GLuint m_programID;
 	GLuint m_lightPosId;
-	GLuint m_cameraPosId;
 	GLint m_timeID;
 	glm::mat4 m_modelMatrix;
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_viewMatrix;
 	glm::vec3 m_lightPos;
-	glm::vec3 m_cameraPos;
 	int m_verticeCount;
 	// Location of objects
 	std::string m_objectFilePath = "objects/";
 	// Location of shaders
 	std::string m_shaderFilePath = "shaders/";
 	// Default name of object to be loaded
-	const std::string m_defaultObjectName = "cube";
+	const std::string m_defaultObjectName = "rottinkituoli";
 	const std::string m_defaultVertexShaderName = "simpleLight";
 	const std::string m_defaultFragmentShaderName = "simpleLight";
 	const std::string m_objectFileEnding = ".obj";
