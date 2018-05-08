@@ -36,13 +36,14 @@ out VS_OUT {
 
 // -------
 
+vec3 mainAxis = vec3(1,0,0);
 
 vec3 normal(){
 	return vertexNormal_modelspace;
 }
 
 vec3 tangent(){
-	return cross(vertexNormal_modelspace,vec3(1,0,0));
+	return cross(vertexNormal_modelspace, mainAxis);
 }
 
 vec3 bitangent(){

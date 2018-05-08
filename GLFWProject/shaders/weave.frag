@@ -1,6 +1,5 @@
 #version 330 core
 
-
 // new stuff
 
 in vec3 posMS;
@@ -24,7 +23,6 @@ in vec3 MaterialDiffuseColor;
 
 out vec3 color;
 
-
 float r = 0.6;
 float scaleX = 4.0;
 float scaleY = 1.0;
@@ -36,6 +34,21 @@ float f(float a, float e){
 
 	float w = sin(a + b) + c;
 	return w;
+}
+
+/*
+Weave function normalized between 0-1.
+*/
+float fNorm(float a, float e){
+	float weave_min = -1;
+	float weave_max = 1 + r;
+	return (f(a,e) - weave_min)/(weave_max - weave_min);
+}
+
+float fNormNP(float a, float e){
+	float weave_min = -1;
+	float weave_max = 1 + r;
+	return 2 * (f(a,e) - weave_min)/(weave_max - weave_min) - 1;
 }
 
 float partialDerivativeX(float a, float e){
@@ -55,8 +68,6 @@ float partialDerivativeY(float a, float e){
 	
 }
 
-// Super hacky version!
-
 void main (void){
 
 	float x = fs_in.FragPosTangentSpace.x;
@@ -66,10 +77,8 @@ void main (void){
 	float e = (y * scaleO) / scaleY;
 
 	// Normal of the computed fragment, in tangent space
-	//vec3 n = normalize(vec3(partialDerivativeX(a,e), partialDerivativeY(a,e), f(a,e)));
+	vec3 n = normalize(vec3(partialDerivativeX(a,e), partialDerivativeY(a,e), f(a,e)));
 
-	vec3 n = normalize( Normal_cameraspace );
-	//vec3 n = normalize( normal);
 	// Direction of the light (from the fragment to the light)
 	vec3 l = normalize(  fs_in.LightPosTangentSpace  - fs_in.FragPosTangentSpace );
 
@@ -77,11 +86,8 @@ void main (void){
 
 	// Cosine of the angle between the normal and the light direction,
 	// clamped above 0
-	//  - light is at the vertical of the triangle -> 1
-	//  - light is perpendicular to the triangle -> 0
-	//  - light is behind the triangle -> 0
 	float cosTheta = clamp( dot( n,l ), 0,1 );
 
-	color = MaterialAmbientColor + MaterialDiffuseColor * LightColor * cosTheta;
-	//color = vec3(1,1,1);
+	//color = MaterialAmbientColor + MaterialDiffuseColor * LightColor * cosTheta;
+	color = MaterialDiffuseColor * cosTheta;
 }
