@@ -32,6 +32,7 @@ public:
 	void draw();
 
 	void reloadShaders();
+	void reloadObject();
 
 	void setProjectionMatrix(const glm::mat4 newProjectionMatrix) {
 		m_projectionMatrix = newProjectionMatrix;
@@ -88,7 +89,7 @@ private:
 	// Location of shaders
 	std::string m_shaderFilePath = "shaders/";
 	// Default name of object to be loaded
-	const std::string m_defaultObjectName = "rottinkituoli";
+	const std::string m_defaultObjectName = "cube";
 	const std::string m_defaultVertexShaderName = "simpleLight";
 	const std::string m_defaultFragmentShaderName = "simpleLight";
 	const std::string m_objectFileEnding = ".obj";

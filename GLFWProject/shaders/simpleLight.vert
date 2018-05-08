@@ -28,7 +28,7 @@ void main (void){
 	Position_worldspace = (M * vec4(vertexPosition_modelspace,1)).xyz;
 
 	// Vector that goes from the vertex to the camera, in camera space.
-	// In camera space, the camera is at the origin (0,0,0).
+	// FIXME light direction is somewhere else!
 	vec3 vertexPosition_cameraspace = ( V * M * vec4(vertexPosition_modelspace,1)).xyz;
 	EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace;
 
@@ -40,7 +40,7 @@ void main (void){
 	// Only correct if ModelMatrix does not scale the model ! Use its inverse transpose if not.
 	Normal_cameraspace = ( V * M * vec4(vertexNormal_modelspace,0)).xyz; 
 
-	// FIXME kovakoodattu valon v‰ri
+	// FIXME kovakoodattu valon v√§ri
 	LightColor = vec3(1.0,1.0,1.0);
 	MaterialDiffuseColor = vec3(1.0,0,0);
 

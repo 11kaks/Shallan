@@ -30,21 +30,17 @@ Object3D::Object3D() {
 	m_viewMatrixID = glGetUniformLocation(m_programID, "V");
 	m_lightPosId = glGetUniformLocation(m_programID, "LightPosition_worldspace");
 
-
 	m_timeID = glGetUniformLocation(m_programID, "inTime");
 
-
-	// Read our .obj file
-	std::vector< glm::vec3 > vertices;
-	std::vector< glm::vec2 > uvs;
-	std::vector< glm::vec3 > normals; // Won't be used at the moment.
-
+	std::vector< glm::vec3 > m_vertices;
+	std::vector< glm::vec2 > m_uvs;
+	std::vector< glm::vec3 > m_normals;
 	std::string objectFilePath = m_objectFilePath + m_objectName + m_objectFileEnding;
-	bool res = loadOBJ(objectFilePath.c_str(), vertices, uvs, normals);
+	bool res = loadOBJ(objectFilePath.c_str(), m_vertices, m_uvs, m_normals);
 
 	if(res) {
-		m_verticeCount = vertices.size();
-		//cout << "Vertice count " << m_verticeCount << endl;
+		m_verticeCount = m_vertices.size();
+		cout << "Vertice count " << m_verticeCount << endl;
 	} else {
 		throw 1;
 	}
@@ -57,7 +53,7 @@ Object3D::Object3D() {
 	// The following commands will talk about our 'vertexbuffer' buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(glm::vec3), &m_vertices[0], GL_STATIC_DRAW);
 	//return vertexbuffer;
 
 
@@ -65,7 +61,7 @@ Object3D::Object3D() {
 
 	glGenBuffers(1, &m_normalBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
-	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(glm::vec3), &m_normals[0], GL_STATIC_DRAW);
 
 }
 
@@ -134,6 +130,10 @@ void Object3D::reloadShaders() {
 	string sVertexShaderFilePath = m_shaderFilePath + m_vertexShaderName + m_vertexShaderFileEndig;
 	string sFragmentShaderFilePath = m_shaderFilePath + m_fragmentShaderName + m_fragmentShaderFileEnding;
 	m_programID = LoadShaders(sVertexShaderFilePath.c_str(), sFragmentShaderFilePath.c_str());
+}
+
+void Object3D::reloadObject() {
+
 }
 
 Object3D::~Object3D() {

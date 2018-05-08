@@ -30,7 +30,7 @@ out vec3 normMS;
 out VS_OUT {
     vec3 FragPosWorldSpace;
     vec3 LightPosTangentSpace;
-    vec3 ViewPosTangentSpace;
+   // vec3 ViewPosTangentSpace;
     vec3 FragPosTangentSpace;
 } vs_out;
 
@@ -71,7 +71,7 @@ void main (void){
     mat3 TBN = transpose(mat3(T, B, N));
 
     vs_out.LightPosTangentSpace = TBN * LightPosition_worldspace;
-    vs_out.ViewPosTangentSpace  = TBN * CameraPosition_worldspace;
+   // vs_out.ViewPosTangentSpace  = TBN * CameraPosition_worldspace;
     vs_out.FragPosTangentSpace  = TBN * vs_out.FragPosWorldSpace;
 
 

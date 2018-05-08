@@ -9,7 +9,7 @@ in vec3 normMS;
 in VS_OUT {
     vec3 FragPosWorldSpace;
     vec3 LightPosTangentSpace;
-    vec3 ViewPosTangentSpace;
+    //vec3 ViewPosTangentSpace;
     vec3 FragPosTangentSpace;
 } fs_in;
 
@@ -66,12 +66,12 @@ void main (void){
 	float e = (y * scaleO) / scaleY;
 
 	// Normal of the computed fragment, in tangent space
-	vec3 n = normalize(vec3(partialDerivativeX(a,e), partialDerivativeY(a,e), f(a,e)));
+	//vec3 n = normalize(vec3(partialDerivativeX(a,e), partialDerivativeY(a,e), f(a,e)));
 
-	//vec3 n = normalize( Normal_cameraspace );
+	vec3 n = normalize( Normal_cameraspace );
 	//vec3 n = normalize( normal);
 	// Direction of the light (from the fragment to the light)
-	vec3 l = normalize( fs_in.FragPosTangentSpace - fs_in.LightPosTangentSpace );
+	vec3 l = normalize(  fs_in.LightPosTangentSpace  - fs_in.FragPosTangentSpace );
 
 	vec3 MaterialAmbientColor = vec3(0.2) * MaterialDiffuseColor;
 
