@@ -47,6 +47,14 @@ public:
 	}
 
 	/*
+	Set camera position in world space.
+	*/
+	void setCameraPosition(glm::vec3 newPosition) {
+		m_camPos = newPosition;
+		//std::cout << "setiing camera " << m_camPos.x << std::endl;
+	}
+
+	/*
 	@param name as it is in file system without .obj ending (it will be added).
 	*/
 	void setObjectName(std::string name) {
@@ -78,11 +86,13 @@ private:
 	GLuint m_viewMatrixID;
 	GLuint m_programID;
 	GLuint m_lightPosId;
+	GLuint m_camPosId;
 	GLint m_timeID;
 	glm::mat4 m_modelMatrix;
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_viewMatrix;
 	glm::vec3 m_lightPos;
+	glm::vec3 m_camPos;
 	int m_verticeCount;
 	// Location of objects
 	std::string m_objectFilePath = "objects/";

@@ -28,12 +28,14 @@ public:
 			drawable->setViewMatrix(V);
 			drawable->setProjectionMatrix(P);
 			drawable->draw();
+			drawable->setCameraPosition(m_camera->getPositionWorldSpace());
 		}
 	}
 
 	void setCamera(Camera *camera) {
 		m_camera = camera;
 	}
+
 
 	void setLight(Light * light) {
 		m_light = light;

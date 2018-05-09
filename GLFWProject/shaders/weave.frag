@@ -1,11 +1,5 @@
 #version 330 core
 
-
-// new stuff
-
-in vec3 posMS;
-in vec3 normMS;
-
 in VS_OUT {
     vec3 FragPosWorldSpace;
     vec3 LightPosTangentSpace;
@@ -13,17 +7,10 @@ in VS_OUT {
     vec3 FragPosTangentSpace;
 } fs_in;
 
-// -----
-
-in vec3 EyeDirection_cameraspace;
-in vec3 Position_worldspace;
-in vec3 Normal_cameraspace;
-in vec3 LightDirection_cameraspace;
 in vec3 LightColor;
 in vec3 MaterialDiffuseColor;
 
 out vec3 color;
-
 
 float r = 0.6;
 float scaleX = 4.0;
@@ -66,10 +53,8 @@ void main (void){
 	float e = (y * scaleO) / scaleY;
 
 	// Normal of the computed fragment, in tangent space
-	//vec3 n = normalize(vec3(partialDerivativeX(a,e), partialDerivativeY(a,e), f(a,e)));
+	vec3 n = normalize(vec3(partialDerivativeX(a,e), partialDerivativeY(a,e), f(a,e)));
 
-	vec3 n = normalize( Normal_cameraspace );
-	//vec3 n = normalize( normal);
 	// Direction of the light (from the fragment to the light)
 	vec3 l = normalize(  fs_in.LightPosTangentSpace  - fs_in.FragPosTangentSpace );
 
@@ -77,11 +62,30 @@ void main (void){
 
 	// Cosine of the angle between the normal and the light direction,
 	// clamped above 0
-	//  - light is at the vertical of the triangle -> 1
-	//  - light is perpendicular to the triangle -> 0
-	//  - light is behind the triangle -> 0
 	float cosTheta = clamp( dot( n,l ), 0,1 );
 
-	color = MaterialAmbientColor + MaterialDiffuseColor * LightColor * cosTheta;
-	//color = vec3(1,1,1);
+	//color = MaterialAmbientColor + MaterialDiffuseColor * LightColor * -cosTheta;
+	//color = MaterialAmbientColor * 50 * cosTheta;
+
+	float beep = 0.2;
+	vec3 testCol = vec3(1,1,1);
+	vec3 testCol2 = vec3(0,0.6,0.5);
+
+	if(    abs(fs_in.FragPosTangentSpace.x) < beep 
+	    && abs(fs_in.FragPosTangentSpace.y) < beep 
+	  //&& abs(fs_in.FragPosTangentSpace.z) < beep    
+	){
+		color = testCol * cosTheta;
+	} else {
+		color = testCol2 * (cosTheta );
+	}
+
+	// light debug
+	//color = abs(l);
+
+	// position debug
+	// r - x
+	// g - y
+	// b - z
+	//color = cosTheta * fs_in.FragPosTangentSpace;
 }

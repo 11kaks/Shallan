@@ -11,6 +11,7 @@ Object3D::Object3D() {
 	m_modelMatrix = glm::mat4(1.0f);
 	// FIXME hard coded light position
 	m_lightPos = glm::vec3(3.0f, 3.0f, 4.0f);
+	m_camPos = glm::vec3(3.0f, 1.0f, -4.0f);
 
 	m_objectName = m_defaultObjectName;
 	m_vertexShaderName = m_defaultVertexShaderName;
@@ -29,6 +30,7 @@ Object3D::Object3D() {
 	m_modelMatrixID = glGetUniformLocation(m_programID, "M");
 	m_viewMatrixID = glGetUniformLocation(m_programID, "V");
 	m_lightPosId = glGetUniformLocation(m_programID, "LightPosition_worldspace");
+	m_camPosId = glGetUniformLocation(m_programID, "CameraPosition_worldspace");
 
 	m_timeID = glGetUniformLocation(m_programID, "inTime");
 
@@ -77,7 +79,13 @@ void Object3D::draw() {
 	glUniformMatrix4fv(m_mvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
 	glUniformMatrix4fv(m_modelMatrixID, 1, GL_FALSE, &m_modelMatrix[0][0]);
 	glUniformMatrix4fv(m_viewMatrixID, 1, GL_FALSE, &m_viewMatrix[0][0]);
+	// Force light to be at same position with camera.
+	m_lightPos = m_camPos;
+
 	glUniform3fv(m_lightPosId, 1, &m_lightPos[0]);
+	//std::cout << "drawing with light (" << m_lightPos.x << "," << m_lightPos.y << "," << m_lightPos.z << ")"  <<std::endl;
+	glUniform3fv(m_camPosId, 1, &m_camPos[0]);
+	//std::cout << "drawing with camera x: " << m_camPos.x << std::endl;
 	float time = (float)glfwGetTime() ;
 	//cout << time << endl;
 	glUniform1f(m_timeID, time);
