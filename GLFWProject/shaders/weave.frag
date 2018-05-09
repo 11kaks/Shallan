@@ -7,13 +7,9 @@ in VS_OUT {
     vec3 FragPosTangentSpace;
 } fs_in;
 
-in vec3 LightColor;
-in vec3 MaterialDiffuseColor;
-
 out vec3 color;
 
 bool useParallax = false;
-
 float r = 0.6;
 float scaleX = 4.0;
 float scaleY = 1.0;
@@ -27,10 +23,19 @@ float f(float a, float e){
 	return w;
 }
 
+/*
+Weave function normalized between 0-1.
+*/
 float fNorm(float a, float e){
-	float min = -1;
-	float max = 1 + r;
-	return (min)/(max-min);
+	float weave_min = -1;
+	float weave_max = 1 + r;
+	return (f(a,e) - weave_min)/(weave_max - weave_min);
+}
+
+float fNormNP(float a, float e){
+	float weave_min = -1;
+	float weave_max = 1 + r;
+	return 2 * (f(a,e) - weave_min)/(weave_max - weave_min) - 1;
 }
 
 float partialDerivativeX(float a, float e){
@@ -49,8 +54,6 @@ float partialDerivativeY(float a, float e){
 	return r*res;
 	
 }
-
-// Super hacky version!
 
 void main (void){
 
@@ -82,7 +85,7 @@ void main (void){
 	vec3 n = normalize(vec3(partialDerivativeX(a,e), partialDerivativeY(a,e), f(a,e)));
 
 	// Direction of the light (from the fragment to the light)
-	vec3 l = normalize(  fs_in.LightPosTangentSpace  - fs_in.FragPosTangentSpace );
+	vec3 l = normalize( fs_in.FragPosTangentSpace - fs_in.LightPosTangentSpace );
 
 	vec3 MaterialAmbientColor = vec3(0.2) * MaterialDiffuseColor;
 
@@ -90,8 +93,8 @@ void main (void){
 	// clamped above 0
 	float cosTheta = clamp( dot( n,l ), 0,1 );
 
-	color = MaterialDiffuseColor * LightColor * cosTheta;
-	//color = MaterialAmbientColor + MaterialDiffuseColor * LightColor * cosTheta;
+	//color = MaterialAmbientColor + MaterialDiffuseColor * LightColor  * cosTheta;
+	color = MaterialDiffuseColor * cosTheta * fs_in.FragPosTangentSpace;
 	//color = MaterialAmbientColor * 50 * cosTheta;
 
 	float beep = 0.2;
