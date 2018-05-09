@@ -19,7 +19,7 @@ out vec3 MaterialDiffuseColor;
 out VS_OUT {
     vec3 FragPosWorldSpace;
     vec3 LightPosTangentSpace;
-   // vec3 ViewPosTangentSpace;
+    vec3 CameraPosTangentSpace;
     vec3 FragPosTangentSpace;
 } vs_out;
 
@@ -61,9 +61,9 @@ void main (void){
 
     mat3 TBN = transpose(mat3(T, B, N));
 
-    vs_out.LightPosTangentSpace = TBN * LightPosition_worldspace;
-   // vs_out.ViewPosTangentSpace  = TBN * CameraPosition_worldspace;
-    vs_out.FragPosTangentSpace  = TBN * vs_out.FragPosWorldSpace;
+    vs_out.LightPosTangentSpace  = TBN * LightPosition_worldspace;
+    vs_out.CameraPosTangentSpace = TBN * CameraPosition_worldspace;
+    vs_out.FragPosTangentSpace   = TBN * vs_out.FragPosWorldSpace;
 
 
 //##############################################
@@ -72,6 +72,10 @@ void main (void){
 
 	// FIXME kovakoodattu valon väri
 	LightColor = vec3(1.0,1.0,1.0);
-	MaterialDiffuseColor = vec3(1.0,0,0);
+	MaterialDiffuseColor = vec3(
+		228.0/255.0,
+		217.0/255.0,
+		111.0/255.0
+	);
 
 }
