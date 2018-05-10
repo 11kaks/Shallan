@@ -37,17 +37,12 @@ vec3 bitangent(){
 	return cross(vertexNormal_modelspace,tangent());
 }
 
-
 void main (void){
-
 	// Our normal and main axis cannot point to same direction
 	// or else we'll get tangent == zero vector.
 	if(length(cross(mainAxis, vertexNormal_modelspace)) < 0.001){
 		mainAxis =  mainAxis + vec3(0,1,0);
 	}
-
-
-//##############################################
 
 	vs_out.FragPosWorldSpace   = vec3(M * vec4(vertexPosition_modelspace, 1.0));
     
@@ -65,11 +60,8 @@ void main (void){
     vs_out.CameraPosTangentSpace = TBN * CameraPosition_worldspace;
     vs_out.FragPosTangentSpace   = TBN * vs_out.FragPosWorldSpace;
 
-
-//##############################################
-
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
-
+	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
 	// FIXME kovakoodattu valon väri
 	LightColor = vec3(1.0,1.0,1.0);
 	MaterialDiffuseColor = vec3(
