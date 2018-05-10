@@ -25,6 +25,7 @@ out VS_OUT {
 
 vec3 mainAxis = vec3(1,0,0);
 
+vec3 mainAxis = vec3(1,0,0);
 vec3 normal(){
 	return vertexNormal_modelspace;
 }

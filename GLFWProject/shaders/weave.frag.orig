@@ -88,7 +88,11 @@ void main (void){
 	vec3 n = normalize(vec3(partialDerivativeX(a,e), partialDerivativeY(a,e), f(a,e)));
 
 	// Direction of the light (from the fragment to the light)
-	vec3 l = normalize(  fs_in.LightPosTangentSpace  - fs_in.FragPosTangentSpace );
+<<<<<<< HEAD
+	vec3 l = normalize(  fs_in.LightPosTangentSpace - fs_in.FragPosTangentSpace );
+=======
+	vec3 l = normalize( fs_in.FragPosTangentSpace - fs_in.LightPosTangentSpace );
+>>>>>>> 9a6dbdca6b77535671a907dd43b8955288ff2c47
 
 	vec3 MaterialAmbientColor = vec3(0.2) * MaterialDiffuseColor;
 
@@ -97,10 +101,14 @@ void main (void){
 	float cosTheta = clamp( dot( n,l ), 0,1 );
 
 	//color = MaterialAmbientColor + MaterialDiffuseColor * LightColor  * cosTheta;
+<<<<<<< HEAD
 
 	color =  MaterialDiffuseColor * LightColor  * cosTheta;
 
 	//color = MaterialDiffuseColor * cosTheta * fs_in.FragPosTangentSpace;
+=======
+	color = MaterialDiffuseColor * cosTheta * fs_in.FragPosTangentSpace;
+>>>>>>> 9a6dbdca6b77535671a907dd43b8955288ff2c47
 	//color = MaterialAmbientColor * 50 * cosTheta;
 
 	float beep = 0.2;
