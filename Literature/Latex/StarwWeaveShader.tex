@@ -4,6 +4,9 @@
 \usepackage[bookmarksopen,bookmarksnumbered,linktocpage]{hyperref}
 \usepackage{mathtools}
 \usepackage{graphicx} % kuvia varten
+\usepackage{amssymb} % lukujoukkojen symbolit. Käyttöesim. $\mathbb{set}$
+\usepackage{amsmath} % overbrace, underbrace
+\DeclareMathOperator{\sgn}{sgn}
 \addbibresource{StarwWeaveShader.bib}
 
 
@@ -44,7 +47,7 @@ Olen toteuttanut punoksen Blenderin Cycles-renderöijän node-ohjelmoinnilla kuv
 \begin{figure}[h] 
 	\centering
 	\includegraphics[height=8cm]{day1.png}
-	\caption{Blenderillä mallinnettu huone, jossa on käytetty punostekstuuria.}
+	\caption{Blenderillä mallinnettu huone, jossa on käytetty proseduraalista punostekstuuria.}
 	\label{fig:room}
 \end{figure}
 
@@ -113,6 +116,43 @@ Funktion $f_{wn}$ Maxima-plottaus kuvassa \ref{fig:maxima_scale} näyttää skaa
 	\caption{Skaalausten ja pyöristyksen vaikutus funktion käyttäytymiseen.}
 	\label{fig:maxima_scale}
 \end{figure}
+
+Jotta funktiota voi käyttää normaalimäppäykseen, pitää laskea funktion normaali pisteessä $(a,e)$ osittaisderivaatan avulla. Osittaisderivointi $a$:n suhteen on yksinkertaista:
+
+\begin{equation}
+\label{eq:partialA}
+\frac{\partial f_w(a,e)}{\partial a} = cos(a + \pi\lfloor \sin{e} \rfloor )
+\end{equation}
+
+Osittaisderivaatta $e$:n suhteen vaatii lattiafunktion derivoinnin, mikä aiheuttaa pieniä hankaluuksia sillä lattiafunktio ei ole jatkuva. Lattiafunktion $\lfloor x \rfloor $ derivaatta ei ole määritelty, kun $ x \in \mathbb{N}$, ja kaikkialla muualla se on $0$, joten käytännön tarkoituksessa voimme pitää sitä aina nollana.
+
+\begin{equation}
+\label{eq:partialE}
+\begin{aligned}
+\frac{\partial f_w(a,e)}{\partial e} & = cos(a + \pi\lfloor \sin{e} \rfloor )  \overbrace{ D \lfloor \sin{e} \rfloor }^\text{= 0} + r \cdot \sgn ( \sin e )\cos e \\
+& = r \cdot \sgn ( \sin e )\cos e
+\end{aligned}
+\end{equation}
+
+Lopullinen normaalivektori pisteessä $(a,e)$ on tällöin $(\frac{\partial f_w(a,e)}{\partial a}, \frac{\partial f_w(a,e)}{\partial e}, f_w(a,e))$.
+
+\chapter{Käytännön toteutus}
+
+\section{Verteksivarjostin}
+
+Jotta saamme laskettua normaalivektorit muillekin kuin tasasille pinnoille, täytyy käyttää tangenttiavaruutta. Muunnos malliavaruudesta tangenttiavaruuteen lasketaan verteksivarjostimessa jokaiselle verteksille erikseen. Tangenttiavaruus käyttää verteksin normaalia z-suuntana, ja vastaavat x- ja y-suunnat (tangentti ja bitangentti) lasketaan ristitulolla niin, että ensin asetetaan päävektori osoittamaan johonkin suuntaan. Mikäli päävektori on saman suuntainen verteksin normaalin kanssa, päävektori käännetään johonkin muuhun suuntaan.
+
+%Käytännössä asetin päävektorin ensin malliavaruuden x-akselin suuntaiseksi, ja muodostin tangenttiavaruuden sillä. Jos normaa
+
+Jotta siirtymä kolmion reunojen välillä olisi pehmeä, normaali pitäisi interpoloida reunan läheisyydessä, mutta tätä toiminnallisuutta en toteuttanut. Lisäksi x- ja y-koordinaatit pitäisi jatkaa sulavasti reunan yli.
+
+\section{Pikselivarjostin}
+
+Pikselivarjostin laskee pinnan normaalin suunnan käyttäen verteksivarjostimen antamia tangenttiavaruuden arvoja.
+
+Jostain syystä a:n suuntainen osittaisderivaatta näyttää paremmalta, kun termi a jätetään kokonaan pois.
+
+E:n suuntaisen derivaatan vaikutus on hyvin pieni, ja sille voidaan hyvin käyttää arvoa nolla.
 
 \chapter{Ohjelmisto}
 

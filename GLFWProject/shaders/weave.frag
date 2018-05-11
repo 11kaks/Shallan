@@ -1,7 +1,7 @@
 #version 330 core
 
-in vec3 LightColor;
-in vec3 MaterialDiffuseColor;
+// Our sole output value is the color of a pixel.
+out vec3 color;
 
 in VS_OUT {
     vec3 FragPosWorldSpace;
@@ -10,17 +10,50 @@ in VS_OUT {
     vec3 FragPosTangentSpace;
 } fs_in;
 
-out vec3 color;
+// Define PI
+const float PI = 3.1415926535897932384626433832795;
 
+vec3 LightColor = vec3(1.0,1.0,1.0);
+vec3 MaterialDiffuseColor = vec3(
+		228.0/255.0,
+		217.0/255.0,
+		111.0/255.0
+	);
+	
 bool useParallax = false;
+bool useNormalMap = true;
+bool useSimpleMath = true;
+bool useEdgeSoft = true;
+
+// Softening factor. Final softening is scaled with scaleO and scaleY.
+float edgeSoftFac = 5;
+
 float r = 0.6;
 float scaleX = 4.0;
 float scaleY = 1.0;
-float scaleO = 500.0;
+float scaleO = 200.0;
 
+float LightPower = 1.00;
+
+/*
+We want our floor to give either 0 or -1. However, 
+floor(sin(pi)) == 1 and this causes bright pixels in areas
+that should be dark.
+*/
+float floorSin(float x){
+	float res = floor(sin(x));
+	if(res > 0.99 && res < 1.01){
+		return 0.0;
+	}
+	return res;
+}
+
+/*
+Weave function.
+*/
 float f(float a, float e){
 	float c = r * abs(sin(e));
-	float b = 3.14 * floor(sin(e));
+	float b = PI * floorSin(e);
 
 	float w = sin(a + b) + c;
 	return w;
@@ -35,78 +68,101 @@ float fNorm(float a, float e){
 	return (f(a,e) - weave_min)/(weave_max - weave_min);
 }
 
+/*
+Weave function normalized between -1 - 1.
+*/
 float fNormNP(float a, float e){
 	float weave_min = -1;
 	float weave_max = 1 + r;
 	return 2 * (f(a,e) - weave_min)/(weave_max - weave_min) - 1;
 }
 
+/*
+Range -1 - 1
+*/
 float partialDerivativeX(float a, float e){
-	//return cos(a + floor(sin(e))) + r * abs(sin(e));
-	return cos(floor(sin(e))); // + a; explodes
+//return 0;
+	if(useSimpleMath){
+		return cos( PI * floorSin(e)); // this looks the same
+	} else {
+		return cos(a + PI * floorSin(e)); // this is correct mathematically
+	}
 }
 
+/*
+Range -1 - 1 or just return 0.0 if simpleMath is used.
+*/
 float partialDerivativeY(float a, float e){
-	//return cos(a + floor(sin(e))) * a + r * (sin(e) * cos(e)) / abs(sin(e));
-	float res = 0.0;
-	if(sin(e) >= 0.0){
-		res = cos(e);
-	} else {
-		res = -cos(e);
-	}
-	return r*res;
 	
+	// For simple math just use zero. It looks pretty good.
+	float res = 0.0;
+
+	if(!useSimpleMath){
+		res =  r * cos(a) * sign(sin(e));
+		// Normalized between -1 - 1
+		res = res / res;
+	}
+
+	return res;
 }
 
 void main (void){
 
-
+	// Scale x and y to be a and e.
 	float x = fs_in.FragPosTangentSpace.x;
 	float y = fs_in.FragPosTangentSpace.y;
-
 	float a = (x * scaleO) / scaleX;
 	float e = (y * scaleO) / scaleY;
 
-
-	//####### Parallax #######
-	if (useParallax){
-	// View direction
-	vec3 v = normalize(  fs_in.CameraPosTangentSpace  - fs_in.FragPosTangentSpace );
-
-	vec2 p = fs_in.FragPosTangentSpace.xy;
-	vec2 pa = p + fNorm(a,e) * v.xy;
-
-	a = pa.x;
-	e = pa.y;
-}
-	// ####################
-
-	
-
-
-	// Normal of the computed fragment, in tangent space
-	vec3 n = normalize(vec3(partialDerivativeX(a,e), partialDerivativeY(a,e), f(a,e)));
+	// Normal is by default the z direction in tangent space.
+	vec3 n = vec3(0,0,1);
 
 	// Direction of the light (from the fragment to the light)
 	vec3 l = normalize(  fs_in.LightPosTangentSpace  - fs_in.FragPosTangentSpace );
 
-	vec3 MaterialAmbientColor = vec3(0.2) * MaterialDiffuseColor;
+	// Not working
+	if (useParallax){
+		// View direction
+		vec3 v =  fs_in.CameraPosTangentSpace  - fs_in.FragPosTangentSpace ;
+
+		vec2 vAE = vec2( (v.x * scaleO) / scaleX, (v.y * scaleO) / scaleY)  ;
+		vec2 vAENorm = normalize(vAE);
+
+		vec2 p = vec2(a,e);
+		vec2 pa = p + fNorm(vAENorm.x,vAENorm.y) * vAENorm;
+
+		a = pa.x;
+		e = pa.y;
+	}
+
+	float q = fNorm(a,e);
+
+	if(useEdgeSoft){
+	// Soften along e since it is the direction with large contrasts.
+		float finSoft = edgeSoftFac / scaleO / scaleY;
+		float q2 = fNorm(a,e+finSoft);
+		float q3 = fNorm(a,e+2*finSoft);
+		float q4 = fNorm(a,e-finSoft);
+		q = (q +q2 +q3 +q4 ) / 4.0;
+	}
+
+	if (useNormalMap){
+		// Normal of the computed fragment, in tangent space
+		 n = n * normalize(vec3( partialDerivativeX(a,e), partialDerivativeY(a,e), q));
+	 }
 
 	// Cosine of the angle between the normal and the light direction,
 	// clamped above 0
 	float cosTheta = clamp( dot( n,l ), 0,1 );
 
-	//color = MaterialAmbientColor + MaterialDiffuseColor * LightColor  * cosTheta;
+	color =  MaterialDiffuseColor * LightColor  * LightPower * cosTheta ;
 
-	color =  MaterialDiffuseColor * LightColor  * cosTheta;
-
-	//color = MaterialDiffuseColor * cosTheta * fs_in.FragPosTangentSpace;
-	//color = MaterialAmbientColor * 50 * cosTheta;
-
+	// Use to see where space origin lies (z can be anything)
 	float beep = 0.2;
 	vec3 testCol = vec3(1,1,1);
 	vec3 testCol2 = vec3(0,0.6,0.5);
-/*
+
+	/*
 	if(    abs(fs_in.FragPosTangentSpace.x) < beep 
 	    && abs(fs_in.FragPosTangentSpace.y) < beep 
 	  //&& abs(fs_in.FragPosTangentSpace.z) < beep    
@@ -115,22 +171,5 @@ void main (void){
 	} else {
 		color = testCol2 * (cosTheta );
 	}
-*/
-	// light debug
-	//color = abs(l);
-
-	// ae debug
-	//vec3 aeCol = vec3(a,e,0);
-	//color = abs(aeCol);
-
-	// xy debug
-	//vec3 xyCol = vec3(0.1,0.1,0.1);
-	//color = xyCol;
-
-
-	// position debug
-	// r - x
-	// g - y
-	// b - z
-	//color = cosTheta * fs_in.FragPosTangentSpace;
+	*/
 }

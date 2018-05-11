@@ -127,6 +127,8 @@ int main(int argc, char** argv) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+	//glEnable(GL_MULTISAMPLE);
+
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 	// Or, for an ortho camera :

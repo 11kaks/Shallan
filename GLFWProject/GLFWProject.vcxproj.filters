@@ -85,5 +85,11 @@
     <None Include="shaders\simpleLight.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shaders\weave.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\weave.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
