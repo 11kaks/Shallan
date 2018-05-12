@@ -101,6 +101,12 @@ void callbackKeyPress(GLFWwindow* window, int key, int scancode, int action, int
 	if(key == GLFW_KEY_H && action == GLFW_PRESS) {
 		printHelp();
 	}
+	if(key == GLFW_KEY_1 && action == GLFW_PRESS) {
+		scene->toggleVisibility(0);
+	}
+	if(key == GLFW_KEY_2 && action == GLFW_PRESS) {
+		scene->toggleVisibility(1);
+	}
 }
 
 /*
@@ -125,6 +131,7 @@ void mouseMiddleCommands(GLFWwindow* window, double xpos, double ypos) {
 	dragStartCursorX = xpos;
 	dragStartCursorY = ypos;
 }
+
 
 void printHelp() {
 	std::cout << std::endl;

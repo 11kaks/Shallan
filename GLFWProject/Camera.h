@@ -10,18 +10,6 @@ class Camera
 {
 public:
 
-	/*
-	Use the one with angles instead.
-	*/
-	Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up, float fieldOfView, int windowWidth, int windowHeight) {
-		m_position = position;
-		m_direction = direction;
-		m_up = up;
-		m_windowWidth = windowWidth;
-		m_windowHeight = windowHeight;
-		m_fov = fieldOfView;
-		updateMatrices();
-	}
 	Camera(glm::vec3 position, float vertAngle, float horAngle, glm::vec3 up, float fieldOfView, int windowWidth, int windowHeight) {
 		m_position = position;
 		calculateDirectionFromAngles();
@@ -33,13 +21,20 @@ public:
 	}
 
 	~Camera();
-
+	/*
+	Zoom by moving the camera along vieweing axis.
+	*/
 	void zoom(float deltaX, float deltaY);
+	/*
+	Rotate the camera around viewing axis.
+	*/
 	void rotate(float deltaX, float deltaY);
+	/*
+	Move the camera on view plane.
+	*/
 	void move(float deltaX, float deltaY);
 
 	glm::mat4 getViewMatrix() {
-		// Camera matrix
 		return m_viewMatrix;
 	}
 	glm::mat4 getProjectionMatrix() {

@@ -17,5 +17,14 @@ void Scene::draw() {
 	}
 }
 
+void Scene::toggleVisibility(int index) {
+	try {
+		Object3D * o = m_objectList.at(index);
+		o->isVisible(!o->isVisible());
+	} catch(...) {
+		std::cerr << "Trying to toggle visibility of object #" << index + 1 << ", but it was not found." << std::endl;
+	}
+}
+
 Scene::~Scene() {
 }

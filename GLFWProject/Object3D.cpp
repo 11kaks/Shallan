@@ -2,8 +2,17 @@
 
 using namespace std;
 
-Object3D::Object3D() {
+Object3D::Object3D(std::string objectName) {
+	m_objectName = objectName;
+	init();
+}
 
+Object3D::Object3D() {
+	m_objectName = m_defaultObjectName;
+	init();
+}
+
+void Object3D::init() {
 	// Initialize matrises as identity.
 	m_viewMatrix = glm::mat4();
 	m_modelMatrix = glm::mat4();
@@ -12,16 +21,15 @@ Object3D::Object3D() {
 	// Testing if shader can work with other than identity matrix.
 	m_modelMatrix = glm::rotate(m_modelMatrix, 30.0f, glm::vec3(0., 1., 0.));
 	m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0., 0., 1.));
-	m_modelMatrix = glm::scale(m_modelMatrix , glm::vec3(3.));
+	m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(3.));
 
 	// Initialize light and comera somewhere.
 	m_lightPos = glm::vec3(3.0f, 3.0f, 4.0f);
 	m_camPos = glm::vec3(3.0f, 1.0f, -4.0f);
 
 	// Set default object name and shaders.
-	m_objectName = m_defaultObjectName;
 	m_vertexShaderName = m_defaultVertexShaderName;
-	m_fragmentShaderName = m_defaultFragmentShaderName;	
+	m_fragmentShaderName = m_defaultFragmentShaderName;
 
 	// Create and compile our GLSL program from the shaders
 	reloadShaders();
@@ -34,7 +42,7 @@ Object3D::Object3D() {
 	m_camPosId = glGetUniformLocation(m_programID, "CameraPosition_worldspace");
 	// Not used
 	//m_timeID = glGetUniformLocation(m_programID, "inTime");
-	
+
 	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;// UVs are not used
 	std::vector< glm::vec3 > normals;
@@ -48,14 +56,14 @@ Object3D::Object3D() {
 		std::cerr << "Object loading failed." << endl;
 		throw 1;
 	}
-	
+
 	// Generate 1 buffer, put the resulting identifier in m_vertexBufferID.
 	glGenBuffers(1, &m_vertexBufferID);
 	// Bind the buffer.
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-	
+
 	// Same for normals.
 	glGenBuffers(1, &m_normalBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
@@ -63,6 +71,11 @@ Object3D::Object3D() {
 }
 
 void Object3D::draw() {
+
+	if(!m_isVisible) {
+		return;
+	}
+
 	// Use our shader
 	glUseProgram(m_programID);
 

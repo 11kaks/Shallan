@@ -74,13 +74,23 @@ int main(int argc, char** argv) {
 	);
 
 	Camera * camera = new Camera(cameraPosition, 3.14f, -0.4f, cameraUp, cameraFov, m_windowWidth, m_windowHeight);
-	Object3D* object = new Object3D();
-	object->setVertexShaderName("weave");
-	object->setFragmentShaderName("weave");
-	object->reloadShaders();
+
+	Object3D* chair = new Object3D("rottinkituoli");
+	chair->setVertexShaderName("weave");
+	chair->setFragmentShaderName("weave");
+	chair->reloadShaders();
+	chair->isVisible(false);
+
+	Object3D* cube = new Object3D();
+	cube->setVertexShaderName("weave");
+	cube->setFragmentShaderName("weave");
+	cube->reloadShaders();
+
 	Light * light = new Light();
+
 	Scene * scene = new Scene();
-	scene->addObject(object);
+	scene->addObject(chair);
+	scene->addObject(cube);
 	scene->setCamera(camera);
 	scene->setLight(light);
 	setScene(scene);
@@ -103,7 +113,8 @@ int main(int argc, char** argv) {
 	}
 
 	// Cleanup
-	delete object;
+	delete chair;
+	delete cube;
 	delete camera;
 	delete light;
 	glDeleteVertexArrays(1, &VertexArrayID);

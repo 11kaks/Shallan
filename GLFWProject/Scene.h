@@ -59,6 +59,11 @@ public:
 		}
 	}
 
+	/*
+	Toggle visibility of object in given index 0->
+	*/
+	void toggleVisibility(int index);
+
 private:
 	std::vector<Object3D*> m_objectList = std::vector<Object3D*>();
 	Camera * m_camera;

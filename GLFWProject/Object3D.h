@@ -35,6 +35,10 @@ public:
 	*/
 	Object3D();
 
+	Object3D(std::string objectName);
+
+	void init();
+
 	/*
 	Destroy buffers and shader program.
 	*/
@@ -108,6 +112,16 @@ public:
 	void setFragmentShaderName(std::string name) {
 		m_fragmentShaderName = name;
 	}
+	/* Get visibility. */
+	bool isVisible() {
+		return m_isVisible;
+	}
+	/* Set visibility. */
+	void isVisible(bool isVisible) {
+		m_isVisible = isVisible;
+	}
+
+
 private:
 	GLuint m_vertexBufferID;
 	GLuint m_normalBufferID;
@@ -126,7 +140,7 @@ private:
 	glm::vec3 m_lightPos;
 	glm::vec3 m_camPos;
 
-	int m_verticeCount = 1;
+	int m_verticeCount;
 	// Relative path of object files.
 	std::string m_objectFilePath = "objects/";
 	// Relative path of shader files.
@@ -147,6 +161,7 @@ private:
 	std::string m_fragmentShaderName;
 	// Force light to camera's location.
 	bool m_useLightToCam = true;
+	bool m_isVisible = true;
 };
 
 #endif
