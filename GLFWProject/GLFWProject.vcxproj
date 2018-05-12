@@ -127,7 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="controls.cpp" />
+    <ClCompile Include="Controls.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object3D.cpp" />
@@ -137,7 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="controls.hpp" />
+    <ClInclude Include="Controls.hpp" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="objloader.hpp" />

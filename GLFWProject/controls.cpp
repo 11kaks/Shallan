@@ -1,35 +1,38 @@
 #include <iostream>
-#include "controls.hpp"
+#include "Controls.hpp"
 
+/*
+Controls is not a real class. It's just a place to store 
+input handlers. There is probably a better way to do this
+but this is good enough for now.
+
+All the methods in this file can be called from main directly.
+*/
+
+// Speed factor for all mouse commands. Smaller is slower.
 float mouseSpeed = 0.003f;
+
+// Zooming speed
+float zoomFac = 3.0;
+// Zoom along x-axis of screen is slower than along y axis
+// if this is set to < 1.
+float zoomXYRatio = 0.3;
 
 bool cursorInsideClientArea = false;
 bool mouseMiddleDown = false;
 bool shiftDown = false;
 bool ctrlDown = false;
 
+// Positions used to calculate dragging.
 double dragStartCursorX;
 double dragStartCursorY;
-
-
-//Camera * camera;
-//
-//void setCamera(Camera *newCamera) {
-//	camera = newCamera;
-//}
-
-//Object3D * object3d;
-//
-//void setObject(Object3D *object) {
-//	object3d = object;
-//}
-
 
 // This is ugly and propably plain wrong. 
 Scene * scene;
 
 /*
-Must be called from main to control scene.
+Control class gives commands to the scene. The scene must be set in
+main method before any commands can be used.
 */
 void setScene(Scene * newScene) {
 	scene = newScene;
@@ -38,22 +41,20 @@ void setScene(Scene * newScene) {
 /*
 Activate mouse commands only if cursor is inside the client area of the window.
 */
-void cursor_enter_callback(GLFWwindow* window, int entered) {
-	if(entered) {
-		cursorInsideClientArea = entered;
-	} else {
-		cursorInsideClientArea = entered;
-		//leftMouseButtonDown = false;
-	}
+void callbackCursorEnter(GLFWwindow* window, int entered) {
+	cursorInsideClientArea = entered;
 }
 
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+/*
+Handle mouse button states.
+*/
+void callbackMouseButton(GLFWwindow* window, int button, int action, int mods) {
 	if(cursorInsideClientArea) {
 
 		if(button == GLFW_MOUSE_BUTTON_MIDDLE) {
 			if(action == GLFW_PRESS) {
 				mouseMiddleDown = true;
-				// Set drag start positions when mous left button is pressed.
+				// Set drag start positions when middle mouse button is pressed.
 				glfwGetCursorPos(window, &dragStartCursorX, &dragStartCursorY);
 			} else {
 				mouseMiddleDown = false;
@@ -62,13 +63,19 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
-void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+/*
+Handle cursor movement.
+*/
+void callbackCursorPosition(GLFWwindow* window, double xpos, double ypos) {
 	if(mouseMiddleDown) {
-		computeMatricesFromInputs(window, xpos, ypos);
+		mouseMiddleCommands(window, xpos, ypos);
 	}
 }
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+/*
+Handle keyboard events. Set modifier key states.
+*/
+void callbackKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
@@ -91,9 +98,16 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		scene->reloadShaders();
 		std::cout << "Reloading shaders done." << std::endl;
 	}
+	if(key == GLFW_KEY_H && action == GLFW_PRESS) {
+		printHelp();
+	}
 }
 
-void computeMatricesFromInputs(GLFWwindow* window, double xpos, double ypos) {
+/*
+Perform actions which use mouse middle button. Modified
+by shift and ctrl keys.
+*/
+void mouseMiddleCommands(GLFWwindow* window, double xpos, double ypos) {
 	
 	float deltaX = (float)dragStartCursorX - (float)xpos;
 	float deltaY = (float)dragStartCursorY - (float)ypos;
@@ -102,8 +116,7 @@ void computeMatricesFromInputs(GLFWwindow* window, double xpos, double ypos) {
 	if(shiftDown) {
 		scene->getCamera()->move(mouseSpeed * deltaX, mouseSpeed * deltaY);	
 	} else if(ctrlDown) {
-		// Zooming control on x-axis is half as fast as along y-axis
-		scene->getCamera()->zoom(mouseSpeed * deltaX * 1.5f , mouseSpeed * 3.0f * deltaY);
+		scene->getCamera()->zoom(mouseSpeed * deltaX * zoomFac * zoomXYRatio, mouseSpeed * zoomFac * deltaY);
 	} else {
 		scene->getCamera()->rotate(mouseSpeed * deltaX, mouseSpeed * deltaY);
 	}
@@ -111,4 +124,16 @@ void computeMatricesFromInputs(GLFWwindow* window, double xpos, double ypos) {
 	// Next poll needs to have the old coordinates as starting point.
 	dragStartCursorX = xpos;
 	dragStartCursorY = ypos;
+}
+
+void printHelp() {
+	std::cout << std::endl;
+	std::cout << "Help - mouse commands" << std::endl;
+	std::cout << "Use mouse middle to rotate the camera." << std::endl;
+	std::cout << "Use lshift + mouse middle to move the camera." << std::endl;
+	std::cout << "Use ctrl + mouse middle to zoom camera. (Actually moves the camera along viewing axis.)" << std::endl;
+	std::cout << std::endl;
+	std::cout << "Help - keyboard commands" << std::endl;
+	std::cout << "Use R to reload shaders." << std::endl;
+	std::cout << "Use H to show this help." << std::endl;
 }

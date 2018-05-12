@@ -16,7 +16,7 @@
 #include "objloader.hpp"
 #include "Object3D.h"
 #include "Camera.h"
-#include "controls.hpp"
+#include "Controls.hpp"
 #include "Scene.h"
 
 using namespace std;
@@ -92,10 +92,10 @@ GLFWwindow* initGLFWWindow() {
 	}
 
 	// Register key callback
-	glfwSetKeyCallback(window, keyCallback);
-	glfwSetCursorEnterCallback(window, cursor_enter_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetKeyCallback(window, callbackKeyPress);
+	glfwSetCursorEnterCallback(window, callbackCursorEnter);
+	glfwSetMouseButtonCallback(window, callbackMouseButton);
+	glfwSetCursorPosCallback(window, callbackCursorPosition);
 
 	// Set OpenGL context
 	glfwMakeContextCurrent(window);
@@ -148,6 +148,7 @@ int main(int argc, char** argv) {
 	Object3D* cube = new Object3D();
 	cube->setVertexShaderName("weave");
 	cube->setFragmentShaderName("weave");
+	cube->reloadShaders();
 	//setObject(cube);
 	Light * light = new Light();
 	Scene * scene = new Scene();
@@ -155,6 +156,8 @@ int main(int argc, char** argv) {
 	scene->addObject(cube);
 	scene->setCamera(camera);
 	scene->setLight(light);
+
+	printHelp();
 
 	while(!glfwWindowShouldClose(window)) {
 		// Setup view

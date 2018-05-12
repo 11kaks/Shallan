@@ -92,19 +92,21 @@ public:
 		m_objectName = name;
 	}
 	/*
+	Call reloadShaders() after all shader names have been set.
+
 	@param name as it is in file system without .vert ending (it will be added).
 	*/
 	void setVertexShaderName(std::string name) {
 		m_vertexShaderName = name;
-		reloadShaders();
 	}
 
 	/*
+	Call reloadShaders() after all shader names have been set.
+
 	@param name as it is in file system without .frag ending (it will be added).
 	*/
 	void setFragmentShaderName(std::string name) {
 		m_fragmentShaderName = name;
-		reloadShaders();
 	}
 private:
 	GLuint m_vertexBufferID;

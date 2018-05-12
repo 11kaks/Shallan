@@ -1,7 +1,7 @@
 #ifndef CONTROLS_HPP
 #define CONTROLS_HPP
 
-// Include GLFW
+// Included in main.
 //#include <GLFW/glfw3.h>
 
 // Include GLM
@@ -11,14 +11,13 @@
 #include "Object3D.h"
 #include "Scene.h"
 
-void cursor_enter_callback(GLFWwindow* window, int entered);
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-//void setCamera(Camera *newCamera);
-//void setObject(Object3D *object);
+void callbackCursorEnter(GLFWwindow* window, int entered);
+void callbackMouseButton(GLFWwindow* window, int button, int action, int mods);
+void callbackCursorPosition(GLFWwindow* window, double xpos, double ypos);
+void callbackKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
 void setScene(Scene * newScene);
+void printHelp();
 
-void computeMatricesFromInputs(GLFWwindow* window, double dragStartXpos, double dragStartYpos);
+void mouseMiddleCommands(GLFWwindow* window, double dragStartXpos, double dragStartYpos);
 
 #endif
