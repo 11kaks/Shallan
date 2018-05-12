@@ -17,31 +17,63 @@
 #include "shader.hpp"
 #include "objloader.hpp"
 
+/*
+Encapsulates a 3D model with vertices and normals. 
+Uses shader program to draw itself. Needs light 
+and camera positions for correct shading.
+
+Simple setters and getters are defined in this header file, wheras 
+more complex loading and drawing methods are in cpp.
+*/
 class Object3D
 {
 public:
 
+	/*
+	Initialize M, V and P matrices; lights and camera. 
+	Create and bind OpenGL buffers for shaders.
+	*/
 	Object3D();
 
+	/*
+	Destroy buffers and shader program.
+	*/
 	~Object3D();
 
+	/*
+	Get ID of the shader program.
+	*/
 	GLuint getProgramId() {
 		return m_programID;
 	}
 
+	/*
+	Draw the object using M, V and P matrices; camera and light.
+	*/
 	void draw();
 
+	/*
+	Reload shaders from file.
+	*/
 	void reloadShaders();
-	void reloadObject();
 
+	/*
+	Set view-to-clip space conversion matrix.
+	*/
 	void setProjectionMatrix(const glm::mat4 newProjectionMatrix) {
 		m_projectionMatrix = newProjectionMatrix;
 	}
 
+	/*
+	Set world-to-view conversion matrix.
+	*/
 	void setViewMatrix(const glm::mat4 newViewMatrix) {
 		m_viewMatrix = newViewMatrix;
 	}
 
+	/*
+	Set model-to-world conversion matrix.
+	*/
 	void setModelMatrix(const glm::mat4 newModelMatrix) {
 		m_modelMatrix = newModelMatrix;
 	}
@@ -51,7 +83,6 @@ public:
 	*/
 	void setCameraPosition(glm::vec3 newPosition) {
 		m_camPos = newPosition;
-		//std::cout << "setiing camera " << m_camPos.x << std::endl;
 	}
 
 	/*
@@ -76,10 +107,8 @@ public:
 		reloadShaders();
 	}
 private:
-	// This will identify our vertex buffer
 	GLuint m_vertexBufferID;
 	GLuint m_normalBufferID;
-	GLuint m_colorBufferID;
 	GLuint m_mvpMatrixID;
 	GLuint m_modelMatrixID;
 	GLuint m_projectionMatrixID;
@@ -87,18 +116,20 @@ private:
 	GLuint m_programID;
 	GLuint m_lightPosId;
 	GLuint m_camPosId;
-	GLint m_timeID;
+	GLint m_timeID; // not in use right now
+
 	glm::mat4 m_modelMatrix;
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_viewMatrix;
 	glm::vec3 m_lightPos;
 	glm::vec3 m_camPos;
-	int m_verticeCount;
-	// Location of objects
+
+	int m_verticeCount = 1;
+	// Relative path of object files.
 	std::string m_objectFilePath = "objects/";
-	// Location of shaders
+	// Relative path of shader files.
 	std::string m_shaderFilePath = "shaders/";
-	// Default name of object to be loaded
+	// Default name of object to be loaded.
 	const std::string m_defaultObjectName = "cube";
 	//const std::string m_defaultObjectName = "rottinkituoli";
 	const std::string m_defaultVertexShaderName = "simpleLight";
@@ -112,6 +143,8 @@ private:
 	std::string m_vertexShaderName;
 	// Fragment shader name to be used in loading from file. Does not contain the .obj file ending.
 	std::string m_fragmentShaderName;
+	// Force light to camera's location.
+	bool m_useLightToCam = true;
 };
 
 #endif

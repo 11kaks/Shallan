@@ -2,69 +2,64 @@
 
 using namespace std;
 
-void initColorBuffer();
-
 Object3D::Object3D() {
 
-	m_projectionMatrix = glm::mat4();
+	// Initialize matrises as identity.
 	m_viewMatrix = glm::mat4();
-	m_modelMatrix = glm::mat4(1.0f);
-	// FIXME hard coded light position
+	m_modelMatrix = glm::mat4();
+	m_projectionMatrix = glm::mat4();
+
+	// Testing if shader can work with other than identity matrix.
+	m_modelMatrix = glm::rotate(m_modelMatrix, 30.0f, glm::vec3(0., 1., 0.));
+	m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0., 0., 1.));
+	m_modelMatrix = glm::scale(m_modelMatrix , glm::vec3(3.));
+
+	// Initialize light and comera somewhere.
 	m_lightPos = glm::vec3(3.0f, 3.0f, 4.0f);
 	m_camPos = glm::vec3(3.0f, 1.0f, -4.0f);
 
+	// Set default object name and shaders.
 	m_objectName = m_defaultObjectName;
 	m_vertexShaderName = m_defaultVertexShaderName;
-	m_fragmentShaderName = m_defaultFragmentShaderName;
-	
-	// Testing some transformations
-	/*Model = glm::rotate(Model, 30.0f, glm::vec3(0., 1., 0.));
-	Model = glm::translate(Model, glm::vec3(0., 0., 4.));
-	Model = glm::scale(Model, glm::vec3(3.));*/
+	m_fragmentShaderName = m_defaultFragmentShaderName;	
 
 	// Create and compile our GLSL program from the shaders
 	reloadShaders();
 
-	// Get a handle for our "MVP" uniform
+	// Get a handles for uniforms
 	m_mvpMatrixID = glGetUniformLocation(m_programID, "MVP");
 	m_modelMatrixID = glGetUniformLocation(m_programID, "M");
 	m_viewMatrixID = glGetUniformLocation(m_programID, "V");
 	m_lightPosId = glGetUniformLocation(m_programID, "LightPosition_worldspace");
 	m_camPosId = glGetUniformLocation(m_programID, "CameraPosition_worldspace");
-
-	m_timeID = glGetUniformLocation(m_programID, "inTime");
-
-	std::vector< glm::vec3 > m_vertices;
-	std::vector< glm::vec2 > m_uvs;
-	std::vector< glm::vec3 > m_normals;
+	// Not used
+	//m_timeID = glGetUniformLocation(m_programID, "inTime");
+	
+	std::vector< glm::vec3 > vertices;
+	std::vector< glm::vec2 > uvs;// UVs are not used
+	std::vector< glm::vec3 > normals;
 	std::string objectFilePath = m_objectFilePath + m_objectName + m_objectFileEnding;
-	bool res = loadOBJ(objectFilePath.c_str(), m_vertices, m_uvs, m_normals);
+	bool res = loadOBJ(objectFilePath.c_str(), vertices, uvs, normals);
 
 	if(res) {
-		m_verticeCount = m_vertices.size();
-		cout << "Vertice count " << m_verticeCount << endl;
+		// Verticecount needed in draw().
+		m_verticeCount = vertices.size();
 	} else {
+		std::cerr << "Object loading failed." << endl;
 		throw 1;
 	}
-
-	// FIXME hack. Remove when lighting is ok.
-	initColorBuffer();
 	
-	// Generate 1 buffer, put the resulting identifier in vertexbuffer
+	// Generate 1 buffer, put the resulting identifier in m_vertexBufferID.
 	glGenBuffers(1, &m_vertexBufferID);
-	// The following commands will talk about our 'vertexbuffer' buffer
+	// Bind the buffer.
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(glm::vec3), &m_vertices[0], GL_STATIC_DRAW);
-	//return vertexbuffer;
-
-
-	// NORMALS
-
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+	
+	// Same for normals.
 	glGenBuffers(1, &m_normalBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
-	glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(glm::vec3), &m_normals[0], GL_STATIC_DRAW);
-
+	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 }
 
 void Object3D::draw() {
@@ -72,23 +67,23 @@ void Object3D::draw() {
 	glUseProgram(m_programID);
 
 	// Our ModelViewProjection : multiplication of our 3 matrices
-	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix; // Remember, matrix multiplication is the other way around
+	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 
-	// Send our transformation to the currently bound shader, 
-	// in the "MVP" uniform
+	// Send matrices to the currently bound shader.
 	glUniformMatrix4fv(m_mvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
 	glUniformMatrix4fv(m_modelMatrixID, 1, GL_FALSE, &m_modelMatrix[0][0]);
 	glUniformMatrix4fv(m_viewMatrixID, 1, GL_FALSE, &m_viewMatrix[0][0]);
-	// Force light to be at same position with camera.
-	m_lightPos = m_camPos;
+
+	if(m_useLightToCam){
+		m_lightPos = m_camPos;
+	}
 
 	glUniform3fv(m_lightPosId, 1, &m_lightPos[0]);
-	//std::cout << "drawing with light (" << m_lightPos.x << "," << m_lightPos.y << "," << m_lightPos.z << ")"  <<std::endl;
 	glUniform3fv(m_camPosId, 1, &m_camPos[0]);
-	//std::cout << "drawing with camera x: " << m_camPos.x << std::endl;
-	float time = (float)glfwGetTime() ;
-	//cout << time << endl;
-	glUniform1f(m_timeID, time);
+
+	// Do time-dependant stuff
+	//float time = (float)glfwGetTime() ;
+	//glUniform1f(m_timeID, time);
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -101,18 +96,7 @@ void Object3D::draw() {
 		0,                  // stride
 		(void*)0            // array buffer offset
 	);
-
-	// 2nd attribute buffer : colors
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, m_colorBufferID);
-	glVertexAttribPointer(
-	1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-	3,                                // size
-	GL_FLOAT,                         // type
-	GL_FALSE,                         // normalized?
-	0,                                // stride
-	(void*)0                          // array buffer offset
-	);
+	// 2nd buffer could be color, but not used now.
 
 	// 3rd attribute buffer : normals
 	glEnableVertexAttribArray(2);
@@ -126,10 +110,8 @@ void Object3D::draw() {
 		(void*)0                          // array buffer offset
 	);
 
-
-
 	// Last do this
-	glDrawArrays(GL_TRIANGLES, 0, m_verticeCount); // Starting from vertex 0; 3*12 vertices total -> 6 sided cube
+	glDrawArrays(GL_TRIANGLES, 0, m_verticeCount);
 	glDisableVertexAttribArray(0);
 
 }
@@ -140,63 +122,8 @@ void Object3D::reloadShaders() {
 	m_programID = LoadShaders(sVertexShaderFilePath.c_str(), sFragmentShaderFilePath.c_str());
 }
 
-void Object3D::reloadObject() {
-
-}
-
 Object3D::~Object3D() {
-	cout << "Deleting object" << endl;
 	glDeleteBuffers(1, &m_vertexBufferID);
-	glDeleteBuffers(1, &m_colorBufferID);
 	glDeleteBuffers(1, &m_normalBufferID);
 	glDeleteProgram(m_programID);
-}
-
-// Just some colors for testing...
-void initColorBuffer() {
-
-	// One color for each vertex. Same as vertex
-	static const GLfloat g_color_buffer_data[] = {
-		-1.0f,-1.0f,-1.0f,
-		-1.0f,-1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f,-1.0f,
-		-1.0f,-1.0f,-1.0f,
-		-1.0f, 1.0f,-1.0f,
-		1.0f,-1.0f, 1.0f,
-		-1.0f,-1.0f,-1.0f,
-		1.0f,-1.0f,-1.0f,
-		1.0f, 1.0f,-1.0f,
-		1.0f,-1.0f,-1.0f,
-		-1.0f,-1.0f,-1.0f,
-		-1.0f,-1.0f,-1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f,-1.0f,
-		1.0f,-1.0f, 1.0f,
-		-1.0f,-1.0f, 1.0f,
-		-1.0f,-1.0f,-1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f,-1.0f, 1.0f,
-		1.0f,-1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f,-1.0f,-1.0f,
-		1.0f, 1.0f,-1.0f,
-		1.0f,-1.0f,-1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f,-1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f,-1.0f,
-		-1.0f, 1.0f,-1.0f,
-		1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f,-1.0f,
-		-1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f,
-		1.0f,-1.0f, 1.0f
-	};
-
-	GLuint m_colorbuffer;
-	glGenBuffers(1, &m_colorbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_colorbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 }
