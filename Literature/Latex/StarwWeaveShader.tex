@@ -98,14 +98,16 @@ joka laajennetaan $x$:n ja $y$:n suhteen syöttämällä sisään yhtälöt~\eqr
 
 \begin{equation}
 \label{eq:weave_xy}
-f_w(x,y) = \sin{\big(\frac{xs_o}{s_a} + \pi \lfloor \sin{\frac{ys_o}{s_e}} \rfloor\big)} + r\lvert\sin{\frac{ys_o}{s_e}}\rvert.
+f_w(x,y) = \sin{\big(\frac{xs_o}{s_a} + \pi \lfloor \sin{\frac{ys_o}{s_e}} \rfloor\big)} + r\lvert\sin{\frac{ys_o}{s_e}}\rvert : \mathbb{R}^2 \rightarrow \mathbb{R}.
 \end{equation}
 
-Lopuksi on hyvä vielä normalisoida yhtälö min-max -skaalauksella välille $\left[0,1\right]$, jotta sitä voidaan käyttää vaikkapa painokertoimena väreille
+Yhtälö \ref{eq:weave_xy} on määritelty koko $\mathbb{R}^2$:ssa, mutta itseisarvo- ja lattiafunkitoiden takia se ei ole jatkuva. 
+
+Lopuksi normalisoidaan yhtälö min-max -skaalauksella~\parencite{dmSlides5} välille $\left[0,1\right]$, jotta kun sitä käytetään pinnan normaalina, se ei painu negatiiviseksi.
 
 \begin{equation}
 \label{eq:weave_norm}
-f_{wn} = \frac{f_w-\min{(f_w)}}{\max{(f_w)}-\min{(f_w)}}.
+f_{wn} = \frac{f_w-\min{(f_w)}}{\max{(f_w)}-\min{(f_w)}} : \mathbb{R}^2 \rightarrow \mathbb{R}.
 \end{equation}
 
 Funktion $f_{wn}$ Maxima-plottaus kuvassa \ref{fig:maxima_scale} näyttää skaalausten ja pyöristyksen vaikutuskohdat. 
@@ -117,14 +119,14 @@ Funktion $f_{wn}$ Maxima-plottaus kuvassa \ref{fig:maxima_scale} näyttää skaa
 	\label{fig:maxima_scale}
 \end{figure}
 
-Jotta funktiota voi käyttää normaalimäppäykseen, pitää laskea funktion normaali pisteessä $(a,e)$ osittaisderivaatan avulla. Osittaisderivointi $a$:n suhteen on yksinkertaista:
+Jotta funktiota voi käyttää normaalimäppäykseen, pitää laskea funktion normaali pisteessä $(a,e)$ osittaisderivaatan avulla. Yhtälön~\ref{eq:weave_xy} osittaisderivointi $a$:n suhteen on yksinkertaista:
 
 \begin{equation}
 \label{eq:partialA}
 \frac{\partial f_w(a,e)}{\partial a} = cos(a + \pi\lfloor \sin{e} \rfloor )
 \end{equation}
 
-Osittaisderivaatta $e$:n suhteen vaatii lattiafunktion derivoinnin, mikä aiheuttaa pieniä hankaluuksia sillä lattiafunktio ei ole jatkuva. Lattiafunktion $\lfloor x \rfloor $ derivaatta ei ole määritelty, kun $ x \in \mathbb{N}$, ja kaikkialla muualla se on $0$, joten käytännön tarkoituksessa voimme pitää sitä aina nollana.
+Osittaisderivaatta $e$:n suhteen vaatii lattiafunktion derivoinnin, mikä aiheuttaa pieniä hankaluuksia, sillä lattiafunktio ei ole jatkuva. Lattiafunktion $\lfloor x \rfloor $ derivaatta ei ole määritelty, kun $ x \in \mathbb{N}$, ja kaikkialla muualla se on $0$, joten käytännön tarkoituksessa voimme pitää sitä aina nollana. Itseisarvofunktion $\lvert x \rvert$ derivaatta on $\sgn(x)$, kun $x \neq 0$.
 
 \begin{equation}
 \label{eq:partialE}

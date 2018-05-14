@@ -1,0 +1,176 @@
+\documentclass{beamer}
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[finnish]{babel}
+
+\usepackage{amssymb} % lukujoukkojen symbolit. Käyttöesim. $\mathbb{set}$
+\usepackage{amsmath} % overbrace, underbrace
+\DeclareMathOperator{\sgn}{sgn}
+
+
+% bibtex
+\usepackage[backend=biber, style=authoryear, doi=false,isbn=false,url=false, giveninits=true]{biblatex}
+\addbibresource{StarwWeaveShader.bib}
+
+\usepackage{graphicx} % kuvia varten
+
+
+\mode<presentation>
+\usetheme{Antibes}
+\setbeamercovered{transparent}
+
+\title{Proseduraalinen normaalikartoitus}
+\subtitle{Punosvarjostin}
+\author{Kimmo Riihihaho \texttt{kimmo.a.riihiaho@student.jyu.fi}}
+\date{15.5.2018}
+
+\subject{Aihe}
+
+\begin{document}
+
+\section{Aloitus}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Sisältö}
+\begin{frame}
+
+{\bf Sisältö} 
+
+\begin{enumerate}
+\item Motivaatio
+\item Matemaattinen esitys korkeuskarttana
+\item Esitys normaalikarttana
+\item Tangenttiavaruus
+\item Komponenttikaavio
+\item Luokkakaavio
+\item Lähteet
+\end{enumerate}
+
+\end{frame}
+
+
+\section{Motivaatio}
+\begin{frame}
+
+\begin{itemize}
+	\item Proseduraalinen teksturointi artistille / teksturoijalle
+		\begin{itemize}
+			\item{Ei tarvitse miettiä tekstuurikuvien toistumista suurilla pinnoilla}
+			\item{Muokattavissa asetusten säätämisellä (verrattuna uuden tekstuurikuvan tuottamiseen / muokkaamiseen)}
+			\item{Ääretön tarkkuus $\rightarrow$ ääretön skaalautuvuus}
+			\item{Ei tarvitse tehdä UV-kartoitusta}
+		\end{itemize}
+	\item{Tehokkuus}
+		\begin{itemize}
+			\item{Kuvaperustaiset tekniikat ovat nopeita, koska ne vaativat vain muistin lukuoperaatioita~\parencite{RTR3}}
+			\item{Proseduraalinen teksturointi vaatii laskentaa}
+		\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\section{Matemaattinen esitys korkeuskarttana}
+\begin{frame}
+
+\begin{itemize}
+	\item { Punosta kuvaavan korkeuskartan yhtälö: \\
+		\begin{equation}
+			\label{eq:weave_xy}
+			f_w(x,y) = \sin{\Big(\frac{xs_o}{s_a} + \pi \lfloor \sin{\frac{ys_o}{s_e}} \rfloor\Big)} + r\lvert\sin{\frac{ys_o}				{s_e}}\rvert,
+		\end{equation} \\
+		
+		missä $s_o$ on yleisskaalaus, $s_a$ on $x$-akselin suuntainen skaalaus, $s_e$ on $y$-akselin suuntainen skaalaus, ja $r$ kuvaa 	yksittäisen kuteen pyöreyttä
+	}
+	\item{Määritelty koko  $\mathbb{R}^2$}:ssa
+	\item{Ei kuitenkaan jatkuva, eikä derivoituva kaikkialla}
+\end{itemize}
+	
+\begin{figure}[h] 
+	\centering
+	\includegraphics[height=3cm]{weave_plot_scales_maxima_small.png}
+	\caption{Skaalausten ja pyöristyksen vaikutus funktion käyttäytymiseen.}
+	\label{fig:maxima_scale}
+\end{figure}
+
+\end{frame}
+
+
+\section{Esitys normaalikarttana}
+\begin{frame}
+
+\begin{itemize}
+	\item Korkeuskartan muuttaminen normaalikartaksi vaatii yhtälön normaalin laskemisen
+	\item Yhtälön~\ref{eq:weave_xy} normaali pisteessä $(x,y)$ on $\Big(\frac{\partial f_w(x,y)}{\partial x}, \frac{\partial 		f_w(x,y)}{\partial y}, f_w(x,y)\Big)$
+	\item Epäjatkuvuuskohdat ja ei-derivoituvat pisteet on käsiteltävä erikseen
+	\item Normalisoidaan $\frac{\partial f_w(x,y)}{\partial x}$ ja $\frac{\partial f_w(x,y)}{\partial y}$ välille $[-1,1]$ 
+	\item ja $f_w(x,y)$ välille $[0,1]$
+	\item Käytännössä voidaan käyttää yksinkertaisempia derivaattoja keventämään laskentaa
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Tangenttiavaruus}
+\begin{frame}
+
+\begin{itemize}
+	\item {Korkeuskartan yhtälö on määritelty vain $xy$-tasossa}
+	\item {
+	Fragmentin sijainti voidaan määrittää tangenttiavaruudessa, jolloin korkeuskenttä saadaan määritettyä mihin tahansa 			suuntaan $\mathbb{R}^3$:ssa
+	}
+	\item{
+	Malliavaruuden kulmapisteiden koordinaatit siirretään tangenttiavaruuteen kertomalla ne matriisilla 
+
+	\[
+	T = 
+	\begin{bmatrix}
+    	\textbf{t}_{x} & \textbf{t}_{y} & \textbf{t}_{z} & 0 \\
+    	\textbf{b}_{x} & \textbf{b}_{y} & \textbf{b}_{z} & 0 \\
+    	\textbf{n}_{x} & \textbf{n}_{y} & \textbf{n}_{z} & 0 \\
+    	0              & 0              & 0              & 1 
+	\end{bmatrix}
+	\]
+
+	missä $\textbf{n}$ on kulmapisteen normaali, $\textbf{t} \perp \textbf{n}$ ja $\textbf{b} \perp \textbf{n} \perp \textbf{t}$~\parencite{RTR3}
+	}
+	\item {Tangenttiavaruuden muodostaminen kun ainoastaan kulmapisteen normaali on tunnettu}
+\end{itemize}
+\end{frame}
+
+
+\section{Komponenttikaavio}
+\begin{frame}
+
+\begin{figure}[h] 
+	\centering
+	\includegraphics[height=6cm]{ClassDiagram.png}
+	\caption{Luokkakaavio}
+	\label{fig:ClassDiagram}
+\end{figure}
+
+\end{frame}
+
+\section{Luokkakaavio}
+\begin{frame}
+
+\begin{figure}[h] 
+	\centering
+	\includegraphics[height=6cm]{ComponentDiagram.png}
+	\caption{Komponenttikaavio}
+	\label{fig:ComponentDiagram}
+\end{figure}
+
+\end{frame}
+
+\section{Lähteet}
+\begin{frame}
+
+\printbibliography
+\end{frame}
+
+
+\end{document}

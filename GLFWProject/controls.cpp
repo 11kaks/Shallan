@@ -143,4 +143,5 @@ void printHelp() {
 	std::cout << "Help - keyboard commands" << std::endl;
 	std::cout << "Use R to reload shaders." << std::endl;
 	std::cout << "Use H to show this help." << std::endl;
+	std::cout << "Use number keys 1-2 to toggle model visibility." << std::endl;
 }
