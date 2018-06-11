@@ -5,6 +5,7 @@
 #include "Object3D.h"
 #include "Camera.h"
 #include "Light.h"
+#include "PhysicalSimulation.h"
 
 /*
 Scene encapsulates drawable objects, lights and the camera.
@@ -68,5 +69,10 @@ private:
 	std::vector<Object3D*> m_objectList = std::vector<Object3D*>();
 	Camera * m_camera;
 	Light * m_light;
+
+	PhysicalSimulation * m_physSim;
+
+	// Simulation time in seconds
+	float m_time;
 };
 

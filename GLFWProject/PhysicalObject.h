@@ -35,7 +35,6 @@ public:
 
 	~PhysicalObject();
 
-	const size_t STATE_SIZE = 18;
 
 	/* Constant quantities defined before running simulation. */
 	float mass; /* mass M */
@@ -55,54 +54,6 @@ public:
 
 	/* Computed quantities */
 	glm::vec3 force; /* F(t) */
-	glm::vec3 torque; /* torque(t) */	/* 
-	Copy the state information into an array.
-	*/
-	void StateToArray(PhysicalObject *rb, float *y) {
-		*y++ = rb->m_x[0]; /* x component of position */
-		*y++ = rb->m_x[1]; /* etc. */
-		*y++ = rb->m_x[2]; 
-		/* copy rotation matrix */
-		for(int i = 0; i < 3; i++) {
-			for(int j = 0; j < 3; j++) {
-				// ith column jth row
-				*y++ = rb->R[i][j];			}		}		*y++ = rb->P[0];
-		*y++ = rb->P[1];
-		*y++ = rb->P[2];
-		*y++ = rb->L[0];
-		*y++ = rb->L[1];
-		*y++ = rb->L[2];
-	}
-
-	/* 
-	Copy information from an array into the state variables 
-
-	Note that ArrayToState is responsible for computing 
-	values for the auxiliary variables Iinv, v and omega.
-	*/
-	void ArrayToState(PhysicalObject *rb, float *y) {
-		rb->m_x[0] = *y++;
-		rb->m_x[1] = *y++;
-		rb->m_x[2] = *y++;
-		for(int i = 0; i < 3; i++) {
-			for(int j = 0; j < 3; j++) {
-				// ith column jth row
-				rb->R[i][j] = *y++;
-			}
-		}
-		rb->P[0] = *y++;
-		rb->P[1] = *y++;
-		rb->P[2] = *y++;
-		rb->L[0] = *y++;
-		rb->L[1] = *y++;
-		rb->L[2] = *y++;
-		/* Compute auxiliary variables... */
-		// v(t) = P(t) / M
-		rb->v = rb->P * (1.f /mass);
-		// I_−1(t) = R(t) * I_−1_body * R(t)_T
-		rb->Iinv = R * Ibodyinv * transpose(R);
-		// omega(t) = I_−1(t) * L(t)
-		rb->omega = rb->Iinv * rb->L;
-	}
+	glm::vec3 torque; /* torque(t) */
 };
 

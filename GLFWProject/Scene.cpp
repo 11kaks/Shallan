@@ -1,9 +1,17 @@
 #include "Scene.h"
 
 Scene::Scene() {
+	m_time = 0.0f;
+	m_physSim = new PhysicalSimulation();
 }
 
 void Scene::draw() {
+
+	// Simulation
+
+	m_physSim->RunSimulation();
+
+	// Simulation end
 
 	glm::mat4 V = m_camera->getViewMatrix();
 	glm::mat4 P = m_camera->getProjectionMatrix();
@@ -27,4 +35,5 @@ void Scene::toggleVisibility(int index) {
 }
 
 Scene::~Scene() {
+	delete m_physSim;
 }
