@@ -19,7 +19,9 @@ void Object3D::init() {
 	m_projectionMatrix = glm::mat4();
 
 	// Testing if shader can work with other than identity matrix.
+	// Rotate model space
 	m_modelMatrix = glm::rotate(m_modelMatrix, 30.0f, glm::vec3(0., 1., 0.));
+	// Translate model space
 	m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0., 0.1, 0.));
 	m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(1.1));
 
