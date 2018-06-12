@@ -58,8 +58,10 @@ public:
 
 	/* Derived quantities (auxiliary variables) */
 	glm::mat3 Iinv; /* I−1(t) */
-	glm::vec3 v; /* v(t) */
-	glm::vec3 omega; /* omega(t) */
+	// Velocity
+	glm::vec3 v;
+	// Angular velocity
+	glm::vec3 omega; 
 
 	/* Computed quantities */
 	glm::vec3 force; /* F(t) */

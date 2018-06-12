@@ -13,10 +13,10 @@ All the methods in this file can be called from main directly.
 float mouseSpeed = 0.003f;
 
 // Zooming speed
-float zoomFac = 3.0;
+float zoomFac = 3.0f;
 // Zoom along x-axis of screen is slower than along y axis
 // if this is set to < 1.
-float zoomXYRatio = 0.3;
+float zoomXYRatio = 0.3f;
 
 bool cursorInsideClientArea = false;
 bool mouseMiddleDown = false;
