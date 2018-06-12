@@ -8,8 +8,11 @@ Scene::Scene() {
 void Scene::draw() {
 
 	// Simulation
+	float oldTime = m_time;
+	m_time += 0.0002;
+	m_physSim->ode(oldTime, m_time);
 
-	m_physSim->RunSimulation();
+	glm::mat4 M = m_physSim->m_physicalObjects[0]->getModelMatrix();
 
 	// Simulation end
 
@@ -18,6 +21,7 @@ void Scene::draw() {
 
 	for(std::size_t i = 0; i < m_objectList.size(); ++i) {
 		Object3D * drawable = m_objectList.at(i);
+		drawable->setModelMatrix(M);
 		drawable->setViewMatrix(V);
 		drawable->setProjectionMatrix(P);
 		drawable->draw();

@@ -136,6 +136,7 @@
     <ClCompile Include="PhysicalSimulation.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="PhysicalSimulation.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="shader.hpp" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\rotate.vert" />

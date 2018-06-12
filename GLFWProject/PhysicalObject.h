@@ -24,13 +24,22 @@ public:
 		Ibody = (mass / 12) * body;
 		Ibodyinv = glm::inverse(Ibody);
 		// Set some angular velocity for testing
-		omega = glm::vec3(2.0f, 0.0f, 0.0f);
+		omega = glm::vec3(0.0f, 0.0f, 0.0f);
 		m_x = glm::vec3(0.0f);
 		v = glm::vec3(0.0f);
 		// Rotation initialized as identity matrix.
 		R = glm::mat3(1.0f);
-		P = glm::vec3(0.0f);
-		L = glm::vec3(0.0f);
+		P = glm::vec3(1.0f);
+		L = glm::vec3(1.0f);
+	}
+	
+	glm::mat4 getModelMatrix() {
+		glm::mat4 m = glm::mat4(1.0f);
+		m[0] = glm::vec4(R[0], 0.0f); // first column
+		m[1] = glm::vec4(R[1], 0.0f); // etc..
+		m[2] = glm::vec4(R[2], 0.0f);
+		m[3] = glm::vec4(m_x, 1.0f);
+		return m;
 	}
 
 	~PhysicalObject();
