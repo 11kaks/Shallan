@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "PhysicalSimulation.h"
+#include "Ode.h"
 
 /*
 Scene encapsulates drawable objects, lights and the camera.

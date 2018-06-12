@@ -132,6 +132,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="objloader.cpp" />
+    <ClCompile Include="Ode.cpp" />
     <ClCompile Include="PhysicalObject.cpp" />
     <ClCompile Include="PhysicalSimulation.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="objloader.hpp" />
+    <ClInclude Include="Ode.h" />
     <ClInclude Include="PhysicalObject.h" />
     <ClInclude Include="PhysicalSimulation.h" />
     <ClInclude Include="Scene.h" />

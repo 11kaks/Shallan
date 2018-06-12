@@ -13,7 +13,7 @@ class PhysicalSimulation
 {
 public:
 
-	int STATE_SIZE = 18;
+	size_t STATE_SIZE = 18;
 
 	PhysicalSimulation() {
 		PhysicalObject * po = new PhysicalObject();
@@ -26,32 +26,7 @@ public:
 	//typedef void(PhysicalSimulation::*DerivFunc)(float t, float x[], float xdot[]);
 
 	void ode(float t0, float t1){
-		// do some magic
-
-		float h = t1 - t0;
-
-		/*
-		Time derivative of X, where X is (x', v').
-		*/
-		std::vector<float> d_dt(getDim());
-
-		particleDerivative(d_dt);
-		Util::scaleVector(d_dt, h);
-
-		/*
-		Particles' state before forces are taken into account (x, v).
-		*/
-		std::vector<float> particleState(getDim());
-		getState(particleState);
-
-		/*
-		State of particle after force calculations (x + x' , v + v').
-		*/
-		std::vector<float> resultingState(getDim());
-		Util::addVectors(d_dt, particleState, resultingState);
-		setState(resultingState);
-		//ArrayToBodies(resultingState);
-
+		
 	}
 
 	void clearForcesAndTorque() {

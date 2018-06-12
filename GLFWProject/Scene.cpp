@@ -10,7 +10,8 @@ void Scene::draw() {
 	// Simulation
 	float oldTime = m_time;
 	m_time += 0.0002;
-	m_physSim->ode(oldTime, m_time);
+	Ode::solve(oldTime, m_time, m_physSim);
+	//m_physSim->ode(oldTime, m_time);
 
 	glm::mat4 M = m_physSim->m_physicalObjects[0]->getModelMatrix();
 
