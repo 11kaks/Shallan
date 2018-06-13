@@ -65,6 +65,7 @@ public:
 
 	/* Computed quantities */
 	glm::vec3 force; /* F(t) */
-	glm::vec3 torque; /* torque(t) */
+	glm::vec3 torque; /* torque(t) */
+
 };
 
