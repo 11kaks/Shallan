@@ -24,7 +24,7 @@ void PhysicalSimulation::computeForcesAndTorque() {
 	}*/
 }
 
-void PhysicalSimulation::particleDerivative(std::vector<float> &dst) {
+void PhysicalSimulation::derivate(std::vector<float> &dst) {
 	if(dst.size() != getDim()) {
 		std::cerr << __func__ << "() Destination is of wrong size to hold particle states. " << std::endl;
 		throw(1);

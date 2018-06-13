@@ -104,6 +104,9 @@
     <ClInclude Include="InertiaShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SimulationBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\rotate.vert">

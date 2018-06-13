@@ -155,6 +155,7 @@
     <ClInclude Include="PhysicalSimulation.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="shader.hpp" />
+    <ClInclude Include="SimulationBase.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>

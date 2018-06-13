@@ -5,11 +5,13 @@
 #include <functional>
 #include "PhysicalObject.h"
 #include "Util.h"
+#include "SimulationBase.h"
+#include "Ode.h"
 
 /*
 Controls physical objects.
 */
-class PhysicalSimulation
+class PhysicalSimulation : public SimulationBase
 {
 public:
 
@@ -24,13 +26,6 @@ public:
 	*/
 	void clearForcesAndTorque();
 
-	/*
-	Currently just sets the force and torque to 
-	some value for all the PhysicalObjects. Later
-	should just use forces that affect some point
-	on object and calculate torque from that.
-	*/
-	void computeForcesAndTorque();
 
 	/*
 	Adds given PhysicalObject to the simulation.
@@ -39,16 +34,35 @@ public:
 		m_physicalObjects.push_back(po);
 	}
 
-	/*void stepSimulation(float t0, float t1) {
+	void stepSimulation(float t0, float t1) {
 		Ode::solve(t0, t1, this);
-	}*/
+	}
 
-	void particleDerivative(std::vector<float> &dst);
+	void derivate(std::vector<float> &dst);
+
+	/*
+	Currently just sets the force and torque to 
+	some value for all the PhysicalObjects. Later
+	should just use forces that affect some point
+	on object and calculate torque from that.
+	*/
+	void computeForcesAndTorque();
+	/*
+	Get current state of all PhysicalObjects in the simulation
+	as a flat list.
+	*/
+	void getState(std::vector<float> &dst);
+
+	/*
+	Set the state of all PhysicalObjects in the simulation
+	from a flat list.
+	*/
+	void setState(std::vector<float> &src);
 
 	/*
 	Turn a vector into a matrix.
-	
-	v = 
+
+	v =
 
 	+-               -+
 	|  0   -v.z   v.y |
@@ -64,18 +78,6 @@ public:
 			-v[1], v[0], 0.0f
 		);
 	}
-
-	/*
-	Get current state of all PhysicalObjects in the simulation
-	as a flat list.
-	*/
-	void getState(std::vector<float> &dst);
-
-	/*
-	Set the state of all PhysicalObjects in the simulation
-	from a flat list.
-	*/
-	void setState(std::vector<float> &src);
 
 	/*
 	Get size_t needed for allocating space for all

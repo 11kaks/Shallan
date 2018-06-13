@@ -1,12 +1,13 @@
 #pragma once
 
-#include "PhysicalSimulation.h"
+#include "SimulationBase.h"
+#include "Util.h"
 
 class Ode
 {
 public:
 
-	static void solve(float t0, float t1, PhysicalSimulation *ps) {
+	static void solve(float t0, float t1, SimulationBase *ps) {
 		float h = t1 - t0;
 		bool adaptive = false;
 
@@ -48,7 +49,7 @@ public:
 	Take runge kutta 4 step and return resulting state. Simulation state
 	is not changed.
 	*/
-	static void takeIntermediateStep(PhysicalSimulation* ps, float stepSize, std::vector<float> &state) {
+	static void takeIntermediateStep(SimulationBase* ps, float stepSize, std::vector<float> &state) {
 
 		// Store original state for later
 		std::vector<float> x0(ps->getDim());
@@ -56,7 +57,7 @@ public:
 
 		// Derivative of the original state scaled by step size.
 		std::vector<float> k1(ps->getDim());
-		ps->particleDerivative(k1);
+		ps->derivate(k1);
 		Util::scaleVector(k1, stepSize);
 
 		// Set new intermediate state x0 + k1/2
@@ -67,7 +68,7 @@ public:
 
 		// Derivative at f(x0 + k1/2) scaled by step size.
 		std::vector<float> k2(ps->getDim());
-		ps->particleDerivative(k2);
+		ps->derivate(k2);
 		Util::scaleVector(k2, stepSize);
 
 		// Set new intermediate state x0 + k2/2
@@ -78,7 +79,7 @@ public:
 
 		// Derivative at f(x0 + k2/2) scaled by step size.
 		std::vector<float> k3(ps->getDim());
-		ps->particleDerivative(k3);
+		ps->derivate(k3);
 		Util::scaleVector(k3, stepSize);
 
 		// Set new intermediate state x0 + k3
@@ -88,7 +89,7 @@ public:
 
 		// Derivative at f(x0 + k3) scaled by step size.
 		std::vector<float> k4(ps->getDim());
-		ps->particleDerivative(k4);
+		ps->derivate(k4);
 		Util::scaleVector(k4, stepSize);
 
 		// Scale and add x0 and k1-k4

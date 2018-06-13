@@ -14,9 +14,7 @@ void Scene::draw() {
 	//m_lastTime = m_currentTime;
 	//m_currentTime += 0.0001;
 
-	// FIXME solver should be called from simulation like this
-	// m_physSim->stepSimulation(m_lastTime, m_currentTime);
-	Ode::solve(m_lastTime / slowDown, m_currentTime / slowDown, m_physSim);
+	 m_physSim->stepSimulation(m_lastTime, m_currentTime);
 	
 	glm::mat4 V = m_camera->getViewMatrix();
 	glm::mat4 P = m_camera->getProjectionMatrix();
