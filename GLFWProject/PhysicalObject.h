@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate..
 
+#include "CollisionShape.h"
+
 
 class PhysicalObject
 {
@@ -15,6 +17,9 @@ public:
 		float x = 1.0f;
 		float y = 1.0f;
 		float z = 1.0f;
+
+		m_collisionShape = new CollisionBoxOrigoSymmetric(glm::vec3(x, y, z));
+
 		mass = 1.0f;
 		glm::mat3 body = glm::mat3(
 			y*y + z*z, 0.0f, 0.0f,
@@ -73,6 +78,8 @@ public:
 	/* Computed quantities */
 	glm::vec3 force; /* F(t) */
 	glm::vec3 torque; /* torque(t) */
+
+	CollisionShape * m_collisionShape;
 
 };
 
