@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <limits>
 
 class Util
 {
@@ -16,7 +17,34 @@ public:
 	static void addVectors(const std::vector<float> &f1, const std::vector<float> &f2, std::vector<float> &res);
 
 	/*
+	Return biggest float in given list.
+	*/
+	static float max(const std::vector<float> vec) {
+		float biggest = std::numeric_limits<float>::min();
+		for(std::size_t i = 0; i < vec.size(); ++i) {
+			if(vec[i] > biggest) {
+				biggest = vec[i];
+			}
+		}
+		return biggest;
+	}
+
+	/*
+	Return smallest float in given list.
+	*/
+	static float min(const std::vector<float> vec) {
+		float smallest = std::numeric_limits<float>::max();
+		for(std::size_t i = 0; i < vec.size(); ++i) {
+			if(vec[i] < smallest) {
+				smallest = vec[i];
+			}
+		}
+		return smallest;
+	}
+
+	/*
 	Find biggest pairwise distance of two float vectors.
+	This is propably stupid.
 	*/
 	static float maxDistance(const std::vector<float> &vec1, const std::vector<float> &vec2) {
 		float res = 0.0f;
