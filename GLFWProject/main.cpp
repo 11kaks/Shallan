@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
 	Scene * scene = new Scene();
 	scene->addObject(chair);
 	scene->addObject(cube);
-	//scene->applyPhysics(cube);
+	//scene->applyPhysics(cube);§
 	scene->applyPhysics(chair);
 	scene->setCamera(camera);
 	scene->setLight(light);
