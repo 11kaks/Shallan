@@ -20,10 +20,10 @@ void Object3D::init() {
 
 	// Testing if shader can work with other than identity matrix.
 	// Rotate model space
-	//m_modelMatrix = glm::rotate(m_modelMatrix, 30.0f, glm::vec3(0., 1., 0.));
+	//m_modelMatrix = glm::rotate(m_modelMatrix, 45.0f, glm::vec3(0.f, 1.f, 0.f));
 	// Translate model space
-	//m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0., 0.1, 0.));
-	//m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(1.1));
+	//m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.f, 0.9f, 0.f));
+	//m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(1.5f));
 
 	// Initialize light and comera somewhere.
 	m_lightPos = glm::vec3(3.0f, 3.0f, 4.0f);
@@ -76,6 +76,14 @@ void Object3D::draw() {
 
 	if(!m_isVisible) {
 		return;
+	}
+
+	/*
+	If this is a physical object, let's ask for current
+	model matrix as set by PhysicalSimultaion.
+	*/
+	if(m_isPhysical) {
+		m_modelMatrix = m_physicalObject->getModelMatrix();
 	}
 
 	// Use our shader

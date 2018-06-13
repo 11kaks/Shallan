@@ -1,28 +1,27 @@
 #include "Scene.h"
 
 Scene::Scene() {
-	m_time = 0.0f;
+	m_currentTime = 0.0;
+	m_lastTime = 0.0;
 	m_physSim = new PhysicalSimulation();
 }
 
 void Scene::draw() {
 
-	// Simulation
-	float oldTime = m_time;
-	m_time += 0.0002f;
-	Ode::solve(oldTime, m_time, m_physSim);
-	//m_physSim->ode(oldTime, m_time);
+	
+	// hax to keep the simulation from exploding before nothing can be seen 
+	double slowDown = 100.0;
+	//m_lastTime = m_currentTime;
+	//m_currentTime += 0.0001;
 
-	glm::mat4 M = m_physSim->m_physicalObjects[0]->getModelMatrix();
-
-	// Simulation end
-
+	// FIXME solver should be called from simulation.
+	Ode::solve(m_lastTime / slowDown, m_currentTime / slowDown, m_physSim);
+	
 	glm::mat4 V = m_camera->getViewMatrix();
 	glm::mat4 P = m_camera->getProjectionMatrix();
 
 	for(std::size_t i = 0; i < m_objectList.size(); ++i) {
 		Object3D * drawable = m_objectList.at(i);
-		drawable->setModelMatrix(M);
 		drawable->setViewMatrix(V);
 		drawable->setProjectionMatrix(P);
 		drawable->draw();

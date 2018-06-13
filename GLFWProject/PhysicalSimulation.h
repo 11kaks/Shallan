@@ -16,19 +16,13 @@ public:
 	size_t STATE_SIZE = 18;
 
 	PhysicalSimulation() {
-		PhysicalObject * po = new PhysicalObject();
-		m_physicalObjects.push_back(po);
+		//PhysicalObject * po = new PhysicalObject();
+		//m_physicalObjects.push_back(po);
 	}
 	~PhysicalSimulation() {
 		m_physicalObjects.clear();
 	}
-
-	//typedef void(PhysicalSimulation::*DerivFunc)(float t, float x[], float xdot[]);
-
-	void ode(float t0, float t1){
-		
-	}
-
+	
 	void clearForcesAndTorque() {
 		for(std::size_t i = 0; i < m_physicalObjects.size(); i++) {
 			m_physicalObjects[i]->force = glm::vec3(0.0f);
@@ -41,7 +35,7 @@ public:
 		for(std::size_t i = 0; i < m_physicalObjects.size(); i++) {
 			PhysicalObject * po = m_physicalObjects[i];
 			glm::vec3 f = glm::vec3(0.0f, 0.0f, 0.0f);
-			glm::vec3 torq = glm::vec3(0.0f, 50.0f, 0.0f);
+			glm::vec3 torq = glm::vec3(0.0f, 0.0f, 0.0f);
 			po->force = f;
 			po->torque = torq;
 		}
@@ -50,6 +44,10 @@ public:
 		/*for(std::size_t k = 0; k < m_forces.size(); k++) {
 			m_forces[k]->applyForce();
 		}*/
+	}
+
+	void addPhysicalObject(PhysicalObject * po) {
+		m_physicalObjects.push_back(po);
 	}
 
 
@@ -170,6 +168,8 @@ public:
 	}
 
 	std::vector<PhysicalObject*> m_physicalObjects;
+
+	// Old code. Remove when physics working correctly.
 
 	/*
 	Copy the state information into an array.

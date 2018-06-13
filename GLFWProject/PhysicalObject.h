@@ -34,12 +34,19 @@ public:
 	}
 	
 	glm::mat4 getModelMatrix() {
-		glm::mat4 m = glm::mat4(1.0f);
+		glm::mat4 m = glm::mat4();
 		m[0] = glm::vec4(R[0], 0.0f); // first column
 		m[1] = glm::vec4(R[1], 0.0f); // etc..
 		m[2] = glm::vec4(R[2], 0.0f);
 		m[3] = glm::vec4(m_x, 1.0f);
 		return m;
+	}
+
+	void setModelMatrix(glm::mat4 m) {
+		R[0] = glm::vec3(m[0]);
+		R[1] = glm::vec3(m[1]);
+		R[2] = glm::vec3(m[2]);
+		m_x  = glm::vec3(m[3]);
 	}
 
 	~PhysicalObject();

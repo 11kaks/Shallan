@@ -30,6 +30,25 @@ public:
 	}
 
 	/*
+	Applies default physics to given object3d.
+	The PhysicalObject given to Object3d is added
+	to PhysicalSimulation.
+	*/
+	void applyPhysics(Object3D * object) {
+		PhysicalObject * po = new PhysicalObject();
+		object->setPhysicalObject(po);
+		m_physSim->addPhysicalObject(po);
+	}
+
+	/*
+	should be able to remove physics. How to 
+	remove the PhysicalObject from PhysicalSimulation? 
+	Would need to search through the list.
+	void removePhysics(Object3D * object) {
+
+	}*/
+
+	/*
 	Provide all objects with camera's matrices and call for
 	object draw method. Lights are not used at the moment.
 	*/
@@ -62,6 +81,18 @@ public:
 	}
 
 	/*
+	Increase time of physical simulation. This should 
+	be done after rendering each frame, so that
+	the simulation can adapt to framerate. 
+
+	@param time change in seconds
+	*/
+	void increaseTime(double deltaTime) {
+		m_lastTime = m_currentTime;
+		m_currentTime += deltaTime;
+	}
+
+	/*
 	Toggle visibility of object in given index 0->
 	*/
 	void toggleVisibility(int index);
@@ -74,6 +105,8 @@ private:
 	PhysicalSimulation * m_physSim;
 
 	// Simulation time in seconds
-	float m_time;
+	double m_currentTime;
+	// Time of previous physicas simulation time in seconds
+	double m_lastTime;
 };
 

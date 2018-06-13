@@ -16,6 +16,7 @@
 
 #include "shader.hpp"
 #include "objloader.hpp"
+#include "PhysicalObject.h"
 
 /*
 Encapsulates a 3D model with vertices and normals. 
@@ -121,6 +122,23 @@ public:
 		m_isVisible = isVisible;
 	}
 
+	/*
+	Setting physical object makes the model part of the PhysicalSimulation.
+	Given PhysicalObject's rotation and translation is overridden
+	by graphical object's model matrix.
+	*/
+	void setPhysicalObject(PhysicalObject * po) {
+		m_physicalObject = po;
+		po->setModelMatrix(m_modelMatrix);
+		m_isPhysical = true;
+	}
+
+	void removePhysicalObject() {
+		// FIXME can I do this? What if someone still uses the pointer?
+		delete m_physicalObject;
+		m_isPhysical = false;
+	}
+
 	glm::mat4 m_modelMatrix;
 
 private:
@@ -161,7 +179,12 @@ private:
 	std::string m_fragmentShaderName;
 	// Force light to camera's location.
 	bool m_useLightToCam = true;
+	// Visibility flag is checked in draw().
 	bool m_isVisible = true;
+	// This flag is used in draw() to determine wheter to use physicalObject's model matrix.
+	bool m_isPhysical = false;
+	// Physical object defines model's reaction's to physical simulation.
+	PhysicalObject * m_physicalObject;
 };
 
 #endif

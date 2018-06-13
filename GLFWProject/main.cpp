@@ -89,6 +89,7 @@ int main(int argc, char** argv) {
 	Scene * scene = new Scene();
 	scene->addObject(chair);
 	scene->addObject(cube);
+	scene->applyPhysics(cube);
 	scene->setCamera(camera);
 	scene->setLight(light);
 	setScene(scene);
@@ -102,14 +103,14 @@ int main(int argc, char** argv) {
 		// Set swap interval other than 0 to prevent tearing
 		//glfwSwapInterval(1);
 
+		fpsCounter->tic(glfwGetTime());
+		showFPS(window);
+		scene->increaseTime(fpsCounter->getTimePerFrame());
 		scene->draw();
 
 		// Swap and check events
 		glfwSwapBuffers(window);
 
-	//	double currentTime = glfwGetTime();
-		fpsCounter->tic(glfwGetTime());
-		showFPS(window);
 		glfwPollEvents();
 	}
 
