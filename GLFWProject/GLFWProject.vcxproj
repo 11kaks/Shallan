@@ -127,6 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionShape.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionShape.h" />
     <ClInclude Include="Controls.hpp" />
     <ClInclude Include="FPSCounter.h" />
     <ClInclude Include="Light.h" />
