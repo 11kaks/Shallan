@@ -121,7 +121,7 @@ void PhysicalSimulation::setState(std::vector<float> &src) {
 		// v(t) = P(t) / M
 		po->v = po->P * (1.f / po->mass);
 		// I_−1(t) = R(t) * I_−1_body * R(t)_T
-		po->Iinv = po->R * po->Ibodyinv * transpose(po->R);
+		po->Iinv = po->R * po->getBodyInertiaInv() * transpose(po->R);
 		// omega(t) = I_−1(t) * L(t)
 		po->omega = po->Iinv * po->L;
 	}

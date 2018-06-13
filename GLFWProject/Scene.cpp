@@ -10,7 +10,7 @@ void Scene::draw() {
 
 	
 	// hax to keep the simulation from exploding before nothing can be seen 
-	double slowDown = 100.0;
+	double slowDown = 10.0;
 	//m_lastTime = m_currentTime;
 	//m_currentTime += 0.0001;
 

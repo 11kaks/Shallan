@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate..
 
 #include "CollisionShape.h"
+#include "InertiaShape.h"
 
 
 class PhysicalObject
@@ -11,23 +12,16 @@ class PhysicalObject
 public:
 	PhysicalObject() {
 		/*
-		xyz is one corner point of origo symmetric box.
+		xyz is one corner point of origosymmetric box.
 		This defines the geometry of the whole box.
 		*/
-		float x = 1.0f;
-		float y = 1.0f;
-		float z = 1.0f;
+		glm::vec3 physicalBoxCorner = glm::vec3(1.0f, 1.0f, 1.0f);
 
-		m_collisionShape = new CollisionBoxOrigoSymmetric(glm::vec3(x, y, z));
+		m_collisionShape = new CollisionBoxOrigoSymmetric(physicalBoxCorner);
+		m_inertiaShape = new InertiaBox(physicalBoxCorner);
 
 		mass = 1.0f;
-		glm::mat3 body = glm::mat3(
-			y*y + z*z, 0.0f, 0.0f,
-			0.0f, x*x + z*z, 0.0f,
-			0.0f, 0.0f, x*x + y*y
-		);
-		Ibody = (mass / 12) * body;
-		Ibodyinv = glm::inverse(Ibody);
+		
 		// Set some angular velocity for testing
 		omega = glm::vec3(0.0f, 0.0f, 0.0f);
 		m_x = glm::vec3(0.0f);
@@ -54,13 +48,21 @@ public:
 		m_x  = glm::vec3(m[3]);
 	}
 
+	glm::mat3 getBodyInertia() {
+		return m_inertiaShape->getInertiaTensor(mass);
+	}
+
+	glm::mat3 getBodyInertiaInv() {
+		return m_inertiaShape->getInertiaTensorInv(mass);
+	}
+
 	~PhysicalObject();
 
 
 	/* Constant quantities defined before running simulation. */
 	float mass; /* mass M */
-	glm::mat3 Ibody; /* Ibody */
-	glm::mat3 Ibodyinv; /* I−1 body (inverse of Ibody) */
+	//glm::mat3 Ibody; /* Ibody */
+	//glm::mat3 Ibodyinv; /* I−1 body (inverse of Ibody) */
 
 	/* State variables */
 	glm::vec3 m_x; /* x(t) */
@@ -79,7 +81,9 @@ public:
 	glm::vec3 force; /* F(t) */
 	glm::vec3 torque; /* torque(t) */
 
+private:
 	CollisionShape * m_collisionShape;
+	InertiaShape * m_inertiaShape;
 
 };
 
