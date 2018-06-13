@@ -21,22 +21,15 @@
 
 using namespace std;
 
-glm::vec3 cameraPosition = glm::vec3(1, 3, 7);;
+glm::vec3 cameraPosition = glm::vec3(1.0f, 3.0f, 7.0f);
 glm::vec3 cameraDirection = glm::vec3(0.0f);
-glm::vec3 cameraUp = glm::vec3(0.f, 1.f, 0.f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 // FOV in degrees
 float cameraFov = 45.0f;
 
 int m_windowWidth = 1280;
 int m_windowHeight = 720;
-
-// FPS counter
-// Time of last render.
-double timeOfLastFPSUpdate = 0.0;
-double timeOfLastRender = 0.0;
-unsigned nbFrames = 0;
-int fps = 0;
 
 FPSCounter * fpsCounter = new FPSCounter();
 
@@ -207,7 +200,7 @@ Show fps in window title.
 void showFPS(GLFWwindow *pWindow) {
 
 	std::ostringstream strs;
-	strs << "FPS - " << fpsCounter->getFpsI() << " : seconds/frame - " << fpsCounter->getTimePerFrame();
+	strs << "FPS - " << fpsCounter->getFpsI() << " : Time per frame " << (int)fpsCounter->getTimePerFrameMS() << " ms";
 	std::string str = strs.str();
 	
 	glfwSetWindowTitle(pWindow, str.c_str());

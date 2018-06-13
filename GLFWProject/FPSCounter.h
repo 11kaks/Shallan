@@ -43,6 +43,11 @@ public:
 		return timePerFrame;
 	}
 
+	/* Time per frame in milliseconds. */
+	double getTimePerFrameMS() {
+		return timePerFrame * 1000;
+	}
+
 private:
 
 	double currentTime = 0.0;
