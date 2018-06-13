@@ -28,8 +28,8 @@ public:
 		v = glm::vec3(0.0f);
 		// Rotation initialized as identity matrix.
 		R = glm::mat3(1.0f);
-		P = glm::vec3(1.0f);
-		L = glm::vec3(1.0f);
+		P = glm::vec3(0.0f);
+		L = glm::vec3(0.0f);
 	}
 	
 	glm::mat4 getModelMatrix() {
