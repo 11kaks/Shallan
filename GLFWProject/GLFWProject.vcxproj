@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Controls.hpp" />
+    <ClInclude Include="FPSCounter.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="objloader.hpp" />

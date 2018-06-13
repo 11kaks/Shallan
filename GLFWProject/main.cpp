@@ -17,6 +17,7 @@
 #include "Camera.h"
 #include "Controls.hpp"
 #include "Scene.h"
+#include "FPSCounter.h"
 
 using namespace std;
 
@@ -32,8 +33,12 @@ int m_windowHeight = 720;
 
 // FPS counter
 // Time of last render.
-double lastTime = 0.0;
+double timeOfLastFPSUpdate = 0.0;
+double timeOfLastRender = 0.0;
 unsigned nbFrames = 0;
+int fps = 0;
+
+FPSCounter * fpsCounter = new FPSCounter();
 
 /*
 Show fps in window title.
@@ -108,6 +113,9 @@ int main(int argc, char** argv) {
 
 		// Swap and check events
 		glfwSwapBuffers(window);
+
+	//	double currentTime = glfwGetTime();
+		fpsCounter->tic(glfwGetTime());
 		showFPS(window);
 		glfwPollEvents();
 	}
@@ -197,22 +205,12 @@ void initDisplay() {
 Show fps in window title. 
 */
 void showFPS(GLFWwindow *pWindow) {
-	// Measure speed
-	double currentTime = glfwGetTime();
-	double delta = currentTime - lastTime;
-	nbFrames++;
-	if(delta >= 1.0) { // If last cout was more than 1 sec ago
 
-		double fps = double(nbFrames) / delta;
-		std::ostringstream strs;
-		strs << "FPS - "  << fps;
-		std::string str = strs.str();
-
-		glfwSetWindowTitle(pWindow, str.c_str());
-
-		nbFrames = 0;
-		lastTime = currentTime;
-	}
+	std::ostringstream strs;
+	strs << "FPS - " << fpsCounter->getFpsI() << " : seconds/frame - " << fpsCounter->getTimePerFrame();
+	std::string str = strs.str();
+	
+	glfwSetWindowTitle(pWindow, str.c_str());
 }
 
 void errorCallback(int error, const char* description) {
