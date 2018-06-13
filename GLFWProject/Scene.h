@@ -87,7 +87,7 @@ public:
 
 	@param time change in seconds
 	*/
-	void increaseTime(double deltaTime) {
+	void increaseTime(float deltaTime) {
 		m_lastTime = m_currentTime;
 		m_currentTime += deltaTime;
 	}
@@ -105,8 +105,8 @@ private:
 	PhysicalSimulation * m_physSim;
 
 	// Simulation time in seconds
-	double m_currentTime;
+	float m_currentTime;
 	// Time of previous physicas simulation time in seconds
-	double m_lastTime;
+	float m_lastTime;
 };
 

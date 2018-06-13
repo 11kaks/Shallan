@@ -35,7 +35,7 @@ public:
 
 	/* FPS as int. */
 	int getFpsI() {
-		return fps;
+		return (int)fps;
 	}
 
 	/* Time per frame in seconds. */

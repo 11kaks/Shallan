@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
 
 		fpsCounter->tic(glfwGetTime());
 		showFPS(window);
-		scene->increaseTime(fpsCounter->getTimePerFrame());
+		scene->increaseTime((float)fpsCounter->getTimePerFrame());
 		scene->draw();
 
 		// Swap and check events
