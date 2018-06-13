@@ -15,7 +15,7 @@ Object3D::Object3D() {
 void Object3D::init() {
 	// Initialize matrises as identity.
 	m_viewMatrix = glm::mat4();
-	m_modelMatrix = glm::mat4();
+	m_modelMatrix = glm::mat4(1.0f);
 	m_projectionMatrix = glm::mat4();
 
 	// Testing if shader can work with other than identity matrix.
@@ -84,6 +84,10 @@ void Object3D::draw() {
 	*/
 	if(m_isPhysical) {
 		m_modelMatrix = m_physicalObject->getModelMatrix();
+		glm::vec3 f = m_physicalObject->force;
+		glm::vec3 q = m_physicalObject->torque;
+		//std::cout << "f = (" << f.x << "," << f.y << "," << f.z << ")" << std::endl;
+		//std::cout << "q = (" << q.x << "," << q.y << "," << q.z << ")" << std::endl;
 	}
 
 	// Use our shader
