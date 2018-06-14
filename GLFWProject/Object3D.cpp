@@ -84,10 +84,6 @@ void Object3D::draw() {
 	*/
 	if(m_isPhysical) {
 		m_modelMatrix = m_physicalObject->getModelMatrix();
-		glm::vec3 f = m_physicalObject->force;
-		glm::vec3 q = m_physicalObject->torque;
-		//std::cout << "f = (" << f.x << "," << f.y << "," << f.z << ")" << std::endl;
-		//std::cout << "q = (" << q.x << "," << q.y << "," << q.z << ")" << std::endl;
 	}
 
 	// Use our shader

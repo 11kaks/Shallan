@@ -75,9 +75,9 @@ void PhysicalSimulation::getState(std::vector<float> &dst) {
 	for(std::size_t k = 0; k < m_physicalObjects.size(); k++) {
 		PhysicalObject * po = m_physicalObjects[k];
 		int ks = k * STATE_SIZE;
-		dst[ks + 0] = po->m_x[0];
-		dst[ks + 1] = po->m_x[1];
-		dst[ks + 2] = po->m_x[2];
+		dst[ks + 0] = po->pos[0];
+		dst[ks + 1] = po->pos[1];
+		dst[ks + 2] = po->pos[2];
 		int idx = 3;
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++) {
@@ -105,9 +105,9 @@ void PhysicalSimulation::setState(std::vector<float> &src) {
 	for(std::size_t k = 0; k < m_physicalObjects.size(); k++) {
 		PhysicalObject * po = m_physicalObjects[k];
 		int ks = k * STATE_SIZE;
-		po->m_x[0] = src[ks + 0];
-		po->m_x[1] = src[ks + 1];
-		po->m_x[2] = src[ks + 2];
+		po->pos[0] = src[ks + 0];
+		po->pos[1] = src[ks + 1];
+		po->pos[2] = src[ks + 2];
 		int idx = 3;
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++) {
@@ -125,7 +125,7 @@ void PhysicalSimulation::setState(std::vector<float> &src) {
 
 		/* Compute auxiliary variables... */
 		// v(t) = P(t) / M
-		po->v = po->P * (1.f / po->mass);
+		po->v = po->P * (1.f / po->getMass());
 		// I_−1(t) = R(t) * I_−1_body * R(t)_T
 		po->Iinv = po->R * po->getBodyInertiaInv() * transpose(po->R);
 		// omega(t) = I_−1(t) * L(t)

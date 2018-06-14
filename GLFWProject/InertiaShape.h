@@ -25,10 +25,10 @@ public:
 		return glm::inverse(m_inertiaTensor);
 	}
 
+	~InertiaShape() {}
 protected:
 	// This might not be good practise..
 	InertiaShape() {}
-	~InertiaShape() {}
 	glm::mat3 m_inertiaTensor;
 };
 
