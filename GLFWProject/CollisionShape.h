@@ -3,6 +3,13 @@
 #include <vector>
 #include "glm/glm.hpp"
 
+/*
+@author Kimmo Riihiaho, kimmo.riihiaho@gmail.com
+@date 14.6.2018
+
+CollisionShape determines the physical shape of the model.
+
+*/
 class CollisionShape
 {
 public:
@@ -113,6 +120,9 @@ private:
 	glm::vec3 m_corner;
 };
 
+/*
+General collision box. Unfinished. Maby unnecessary.
+*/
 class CollisionBox : public CollisionShape
 {
 public:
@@ -121,6 +131,9 @@ public:
 private:
 };
 
+/*
+General collision box. Unfinished.
+*/
 class CollisionSphere : public CollisionShape
 {
 public:
