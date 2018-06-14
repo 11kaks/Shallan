@@ -9,14 +9,23 @@
 #include "Ode.h"
 
 /*
+@author Kimmo Riihiaho, kimmo.riihiaho@gmail.com
+@date 14.6.2018
+
 Controls physical objects.
 */
 class PhysicalSimulation : public SimulationBase
 {
 public:
 
+	/*
+	Create a new empty simulation
+	*/
 	PhysicalSimulation() {}
 
+	/*
+	Delete the simulation and it's physical objects.
+	*/
 	~PhysicalSimulation() {
 		m_physicalObjects.clear();
 	}
@@ -26,7 +35,6 @@ public:
 	*/
 	void clearForcesAndTorque();
 
-
 	/*
 	Adds given PhysicalObject to the simulation.
 	*/
@@ -34,10 +42,43 @@ public:
 		m_physicalObjects.push_back(po);
 	}
 
-	void stepSimulation(float t0, float t1) {
-		Ode::solve(t0, t1, this);
-	}
+	/*
+	Drive the simulation from starting time t0
+	to ending time t1.
 
+	@param t0 starting time in seconds
+	@param t1 ending time in seconds
+	*/
+	void stepSimulation(float t0, float t1);
+
+	/*
+	Get the time derivative of simulation state.
+
+	Composition of dst list:
+
+	v = velocity, R = rotation matrix, f = force, q = torque
+
+	idx: value
+	0  : v.x
+	1  : v.y
+	2  : v.z
+	3  : R00
+	4  : R01
+	5  : R02
+	6  : R10
+	7  : R11
+	8  : R12
+	9  : R20
+	10 : R21
+	11 : R22
+	12 : f.x
+	13 : f.y
+	14 : f.z
+	15 : q.x
+	16 : q.y
+	17 : q.z
+
+	*/
 	void derivate(std::vector<float> &dst);
 
 	/*
@@ -50,12 +91,63 @@ public:
 	/*
 	Get current state of all PhysicalObjects in the simulation
 	as a flat list.
+	
+	Composition of dst list:
+
+	x = position, R = rotation matrix, p = linear momentum, l = angular momentum
+
+	idx: value
+	0  : x.x
+	1  : x.y
+	2  : x.z
+	3  : R00
+	4  : R01
+	5  : R02
+	6  : R10
+	7  : R11
+	8  : R12
+	9  : R20
+	10 : R21
+	11 : R22
+	12 : p.x
+	13 : p.y
+	14 : p.z
+	15 : l.x
+	16 : l.y
+	17 : l.z
+	
 	*/
 	void getState(std::vector<float> &dst);
 
 	/*
 	Set the state of all PhysicalObjects in the simulation
-	from a flat list.
+	from a flat list. Also computes auxiliary variables: velocity, angular velocity 
+	and inverse of inertia matrix.
+		
+	Composition of src vector
+
+	x = position, R = rotation matrix, p = linear momentum, l = angular momentum
+
+	idx: value
+	0  : x.x
+	1  : x.y
+	2  : x.z
+	3  : R00
+	4  : R01
+	5  : R02
+	6  : R10
+	7  : R11
+	8  : R12
+	9  : R20
+	10 : R21
+	11 : R22
+	12 : p.x
+	13 : p.y
+	14 : p.z
+	15 : l.x
+	16 : l.y
+	17 : l.z
+	
 	*/
 	void setState(std::vector<float> &src);
 
@@ -88,6 +180,9 @@ public:
 	}
 
 private:
+	// List of all objects in the simulation.
 	std::vector<PhysicalObject*> m_physicalObjects;
+
+	// Amount of state variables of a single physical object.
 	const size_t STATE_SIZE = 18;
 };

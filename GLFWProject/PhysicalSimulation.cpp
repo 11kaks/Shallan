@@ -1,6 +1,10 @@
 ﻿#include "PhysicalSimulation.h"
 
 
+void PhysicalSimulation::stepSimulation(float t0, float t1) {
+	Ode::solve(t0, t1, this);
+}
+
 void PhysicalSimulation::clearForcesAndTorque() {
 	for(std::size_t i = 0; i < m_physicalObjects.size(); i++) {
 		m_physicalObjects[i]->force = glm::vec3(0.0f);
@@ -24,32 +28,6 @@ void PhysicalSimulation::computeForcesAndTorque() {
 	}*/
 }
 
-/*
-Composition of dst list:
-
-v = velocity, R = rotation matrix, f = force, q = torque
-
-idx: value
-0  : v.x
-1  : v.y
-2  : v.z
-3  : R00
-4  : R01
-5  : R02
-6  : R10
-7  : R11
-8  : R12
-9  : R20
-10 : R21
-11 : R22
-12 : f.x
-13 : f.y
-14 : f.z
-15 : q.x
-16 : q.y
-17 : q.z
-
-*/
 void PhysicalSimulation::derivate(std::vector<float> &dst) {
 	if(dst.size() != getDim()) {
 		std::cerr << __func__ << "() Destination is of wrong size to hold particle states. " << std::endl;
@@ -87,32 +65,7 @@ void PhysicalSimulation::derivate(std::vector<float> &dst) {
 	}
 }
 
-/*
-Composition of dst list:
 
-x = position, R = rotation matrix, p = linear momentum, l = angular momentum
-
-idx: value
-0  : x.x
-1  : x.y
-2  : x.z
-3  : R00
-4  : R01
-5  : R02
-6  : R10
-7  : R11
-8  : R12
-9  : R20
-10 : R21
-11 : R22
-12 : p.x
-13 : p.y
-14 : p.z
-15 : l.x
-16 : l.y
-17 : l.z
-
-*/
 void PhysicalSimulation::getState(std::vector<float> &dst) {
 
 	if(dst.size() != getDim()) {
