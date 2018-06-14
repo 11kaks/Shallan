@@ -19,6 +19,9 @@
 #include "PhysicalObject.h"
 
 /*
+@author Kimmo Riihiaho, kimmo.riihiaho@gmail.com
+@date 14.6.2018
+
 Encapsulates a 3D model with vertices and normals. 
 Uses shader program to draw itself. Needs light 
 and camera positions for correct shading.
@@ -139,7 +142,6 @@ public:
 		m_isPhysical = false;
 	}
 
-	glm::mat4 m_modelMatrix;
 
 private:
 	GLuint m_vertexBufferID;
@@ -153,6 +155,7 @@ private:
 	GLuint m_camPosId;
 	GLint m_timeID; // not in use right now
 
+	glm::mat4 m_modelMatrix;
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_viewMatrix;
 	glm::vec3 m_lightPos;

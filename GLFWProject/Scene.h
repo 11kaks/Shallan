@@ -9,11 +9,14 @@
 #include "Ode.h"
 
 /*
+@author Kimmo Riihiaho, kimmo.riihiaho@gmail.com
+@date 14.6.2018
+
 Scene encapsulates drawable objects, lights and the camera.
 All changes to these objects should be done through scene object.
 
 In the future, it would be better if encapsulated objects were not open 
-byu getters.
+by getters.
 */
 class Scene
 {
