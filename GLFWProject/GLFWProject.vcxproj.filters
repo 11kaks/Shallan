@@ -57,9 +57,6 @@
     <ClCompile Include="CollisionShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InertiaShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.hpp">
