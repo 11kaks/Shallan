@@ -3,6 +3,13 @@
 #include "SimulationBase.h"
 #include "Util.h"
 
+/*
+@author Kimmo Riihiaho, kimmo.riihiaho@gmail.com
+@date 14.6.2018
+
+Ode can step simulations over a time interval.
+
+*/
 class Ode
 {
 public:
@@ -12,6 +19,12 @@ public:
 		bool adaptive = false;
 
 		if(adaptive) {
+
+			// TODO take more small steps if error is high.
+			// What error should be used? The biggest? Average?
+			// We are solving the whole simulation at one go 
+			// after all..
+
 			/*float maxE = 0.1f;
 
 			// Original state
@@ -45,6 +58,9 @@ public:
 		}
 	}
 
+	/*
+	Basically Euler solver.
+	*/
 	static void takeSimpleIntermediateStep(SimulationBase* ps, float stepSize, std::vector<float> &state) {
 		/*
 		Time derivative of X, where X is (x', v').
@@ -55,13 +71,13 @@ public:
 		Util::scaleVector(d_dt, stepSize);
 
 		/*
-		Particles' state before forces are taken into account (x, v).
+		Simulation state before forces are taken into account (x, v).
 		*/
 		std::vector<float> particleState(ps->getDim());
 		ps->getState(particleState);
 
 		/*
-		State of particle after force calculations (x + x' , v + v').
+		State of the simulation after force calculations (x + x' , v + v').
 		*/
 		std::vector<float> resultingState(ps->getDim());
 		Util::addVectors(d_dt, particleState, state);
