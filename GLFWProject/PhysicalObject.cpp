@@ -27,7 +27,7 @@ glm::mat4 PhysicalObject::getModelMatrix() {
 	m[0] = glm::vec4(R[0], 0.0f); // first column
 	m[1] = glm::vec4(R[1], 0.0f); // etc..
 	m[2] = glm::vec4(R[2], 0.0f);
-	m[3] = glm::vec4(pos, 1.0f);
+	m[3] = glm::vec4(pos, 1.0f); // translation component
 	return m;
 }
 
@@ -35,5 +35,5 @@ void PhysicalObject::setModelMatrix(glm::mat4 m) {
 	R[0] = glm::vec3(m[0]);
 	R[1] = glm::vec3(m[1]);
 	R[2] = glm::vec3(m[2]);
-	pos = glm::vec3(m[3]);
+	pos = glm::vec3(m[3]);  // translation component
 }

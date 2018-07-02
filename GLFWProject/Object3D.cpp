@@ -29,6 +29,8 @@ void Object3D::init() {
 	m_lightPos = glm::vec3(3.0f, 3.0f, 4.0f);
 	m_camPos = glm::vec3(3.0f, 1.0f, -4.0f);
 
+	m_collisionBoxColor = glm::vec3(0.0f, 0.7f, 0.0f);
+
 	// Set default object name and shaders.
 	m_vertexShaderName = m_defaultVertexShaderName;
 	m_fragmentShaderName = m_defaultFragmentShaderName;
@@ -72,6 +74,10 @@ void Object3D::init() {
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 }
 
+void Object3D::drawCollisionBoundingBox() {
+
+}
+
 void Object3D::draw() {
 
 	if(!m_isVisible) {
@@ -84,6 +90,7 @@ void Object3D::draw() {
 	*/
 	if(m_isPhysical) {
 		m_modelMatrix = m_physicalObject->getModelMatrix();
+		drawCollisionBoundingBox();
 	}
 
 	// Use our shader

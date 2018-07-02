@@ -21,9 +21,23 @@
 
 using namespace std;
 
+/*
+TODO
+- draw collision shapes
+- shape scaling (collision/graphical)
+- allow removing of objects
+- window resize
+- use UI to add/remove and scaling
+- implement collision detection
+- implement forces. Gravity and drag global.
+- Simulation: min and max step count, duration in frames, initial state save
+- 
+*/
+
 glm::vec3 cameraPosition = glm::vec3(1.0f, 3.0f, 7.0f);
 glm::vec3 cameraDirection = glm::vec3(0.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec4 clearColor(0.18f, 0.18f, 0.18f, 0.0f);
 
 // FOV in degrees
 float cameraFov = 45.0f;
@@ -189,7 +203,7 @@ void initGLEW() {
 }
 void initDisplay() {
 	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one

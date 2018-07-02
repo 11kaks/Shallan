@@ -55,6 +55,10 @@ public:
 		return m_inertiaShape->getInertiaTensorInv(m_mass);
 	}
 
+	CollisionShape* getCollisionShape() {
+		return m_collisionShape;
+	}
+
 	// PhysicalSimulation has great control over these
 	// variables. Should make them private I think.
 
@@ -87,6 +91,7 @@ public:
 	}
 
 private:
+	// Object's mass in kg.
 	float m_mass;
 	// Collision shape 
 	CollisionShape * m_collisionShape;

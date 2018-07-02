@@ -142,6 +142,48 @@ public:
 		m_isPhysical = false;
 	}
 
+	void drawCollisionBoundingBox();
+	/*{
+		CollisionShape * cs = m_physicalObject->getCollisionShape();
+		std::vector<glm::vec3> corners = cs->getCornerPointList();
+
+		glLineWidth(2.5);
+		glColor3f(m_collisionBoxColor.x, m_collisionBoxColor.y, m_collisionBoxColor.z);
+
+		glBegin(GL_LINE_LOOP);
+			glVertex3f(corners[0].x, corners[0].y, corners[0].z);
+			glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+			glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+			glVertex3f(corners[3].x, corners[3].y, corners[3].z);
+		glEnd();
+
+		glBegin(GL_LINE_LOOP);
+			glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+			glVertex3f(corners[5].x, corners[5].y, corners[5].z);
+			glVertex3f(corners[6].x, corners[6].y, corners[6].z);
+			glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+		glEnd();
+
+		glBegin(GL_LINE);
+			glVertex3f(corners[0].x, corners[0].y, corners[0].z);
+			glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+		glEnd();
+
+		glBegin(GL_LINE);
+			glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+			glVertex3f(corners[5].x, corners[5].y, corners[5].z);
+		glEnd();
+
+		glBegin(GL_LINE);
+			glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+			glVertex3f(corners[6].x, corners[6].y, corners[6].z);
+		glEnd();
+
+		glBegin(GL_LINE);
+			glVertex3f(corners[3].x, corners[3].y, corners[3].z);
+			glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+		glEnd();
+	}*/
 
 private:
 	GLuint m_vertexBufferID;
@@ -160,6 +202,8 @@ private:
 	glm::mat4 m_viewMatrix;
 	glm::vec3 m_lightPos;
 	glm::vec3 m_camPos;
+
+	glm::vec3 m_collisionBoxColor;
 
 	int m_verticeCount;
 	// Relative path of object files.
@@ -184,7 +228,7 @@ private:
 	bool m_useLightToCam = true;
 	// Visibility flag is checked in draw().
 	bool m_isVisible = true;
-	// This flag is used in draw() to determine wheter to use physicalObject's model matrix.
+	// This flag is used in draw() to determine wheter to use physicalObject's model matrix controlled by simulation.
 	bool m_isPhysical = false;
 	// Physical object defines model's reaction's to physical simulation.
 	PhysicalObject * m_physicalObject;
