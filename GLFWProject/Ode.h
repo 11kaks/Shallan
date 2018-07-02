@@ -2,6 +2,7 @@
 
 #include "SimulationBase.h"
 #include "Util.h"
+#include <vector>
 
 /*
 @author Kimmo Riihiaho, kimmo.riihiaho@gmail.com

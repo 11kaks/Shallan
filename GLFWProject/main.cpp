@@ -39,6 +39,7 @@ glm::vec3 cameraDirection = glm::vec3(0.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec4 clearColor(0.18f, 0.18f, 0.18f, 0.0f);
 
+
 // FOV in degrees
 float cameraFov = 45.0f;
 

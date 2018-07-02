@@ -75,7 +75,7 @@ void Object3D::init() {
 }
 
 void Object3D::drawCollisionBoundingBox() {
-
+	// https://www.khronos.org/opengl/wiki/Buffer_Object
 }
 
 void Object3D::draw() {

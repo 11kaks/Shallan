@@ -76,6 +76,10 @@ public:
 		return res;
 	}
 
+	/*
+	Returns an array of vertices (as 4 succeeding floats) which 
+	are the corners of the collision shape.
+	*/
 	float* getCorners() {
 		float corners[] = {
 			minX, minY, minZ, 1.0f,
@@ -90,6 +94,10 @@ public:
 		return corners;
 	}
 
+	/*
+	Returns an int array for drawing. Draw loop 0-3 and 
+	4-7, and lines for the rest.
+	*/
 	int* getCornerDrawOrder() {
 		int elements[] = {
 			0, 1, 2, 3,
