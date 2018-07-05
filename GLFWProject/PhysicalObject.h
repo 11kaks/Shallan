@@ -55,6 +55,9 @@ public:
 		return m_inertiaShape->getInertiaTensorInv(m_mass);
 	}
 
+	/*
+	Will always return CollisionShape that is not null.
+	*/
 	CollisionShape* getCollisionShape() {
 		return m_collisionShape;
 	}

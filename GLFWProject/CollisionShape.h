@@ -61,17 +61,17 @@ public:
 	Draw lines:
 	0-1, 1-2, 2-3, 3-0, 4-5, 5-6, 6-7, 7-4, 0-4, 1-5, 2-6 and 3-7
 	*/
-	std::vector<glm::vec3> getCornerPointList() {
-		std::vector<glm::vec3> res(8);
+	std::vector<glm::vec4> getCornerPointList() {
+		std::vector<glm::vec4> res(8);
 
-		res[0] = glm::vec3(minX, minY, minZ);
-		res[1] = glm::vec3(maxX, minY, minZ);
-		res[2] = glm::vec3(maxX, minY, maxZ);
-		res[3] = glm::vec3(minX, minY, maxZ);
-		res[4] = glm::vec3(minX, maxY, minZ);
-		res[5] = glm::vec3(maxX, maxY, minZ);
-		res[6] = glm::vec3(maxX, maxY, maxZ);
-		res[7] = glm::vec3(minX, maxY, maxZ);
+		res[0] = glm::vec4(minX, minY, minZ, 1.0f);
+		res[1] = glm::vec4(maxX, minY, minZ, 1.0f);
+		res[2] = glm::vec4(maxX, minY, maxZ, 1.0f);
+		res[3] = glm::vec4(minX, minY, maxZ, 1.0f);
+		res[4] = glm::vec4(minX, maxY, minZ, 1.0f);
+		res[5] = glm::vec4(maxX, maxY, minZ, 1.0f);
+		res[6] = glm::vec4(maxX, maxY, maxZ, 1.0f);
+		res[7] = glm::vec4(minX, maxY, maxZ, 1.0f);
 
 		return res;
 	}
@@ -98,8 +98,8 @@ public:
 	Returns an int array for drawing. Draw loop 0-3 and 
 	4-7, and lines for the rest.
 	*/
-	int* getCornerDrawOrder() {
-		int elements[] = {
+	unsigned* getCornerDrawOrder() {
+		unsigned elements[] = {
 			0, 1, 2, 3,
 			4, 5, 6, 7,
 			0, 4, 1, 5, 2, 6, 3, 7

@@ -66,6 +66,13 @@ public:
 	void reloadShaders();
 
 	/*
+	Load / reload collision bounding box shades.
+	*/
+	void reloadCbbShaders();
+
+	void initCbb();
+
+	/*
 	Set view-to-clip space conversion matrix.
 	*/
 	void setProjectionMatrix(const glm::mat4 newProjectionMatrix) {
@@ -133,6 +140,7 @@ public:
 	void setPhysicalObject(PhysicalObject * po) {
 		m_physicalObject = po;
 		po->setModelMatrix(m_modelMatrix);
+		initCbb();
 		m_isPhysical = true;
 	}
 
@@ -187,12 +195,25 @@ public:
 
 private:
 	GLuint m_vertexBufferID;
+	GLuint m_cbbVertexBufferID;
+	GLuint m_cbbElementsID;
 	GLuint m_normalBufferID;
 	GLuint m_mvpMatrixID;
+	GLuint m_cbbMvpMatrixID;
 	GLuint m_modelMatrixID;
 	GLuint m_projectionMatrixID;
 	GLuint m_viewMatrixID;
 	GLuint m_programID;
+	/* Geometry shape's vertex VAO id. It has to be the same
+	as in shader's layer. Otherwise will generate access violation
+	when drawing. Same for other VAO IDs.*/
+	GLuint m_vaoMainVertsID = 0;
+	// Geometry shape's normal VAO id.
+	GLuint m_vaoMainNormalsID = 2;
+	// Collision shape's vertex VAO id
+	GLuint m_vaoCbbVertsID = 3;
+	// Collision bounding box shader program id.
+	GLuint m_cbbProgramID;
 	GLuint m_lightPosId;
 	GLuint m_camPosId;
 	GLint m_timeID; // not in use right now

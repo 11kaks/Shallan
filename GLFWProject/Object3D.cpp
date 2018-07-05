@@ -1,6 +1,11 @@
 #include "Object3D.h"
+#include <vector>
 
 using namespace std;
+
+void _CheckGLError(const char* file, int line);
+
+#define CheckGLError() _CheckGLError(__FILE__, __LINE__)
 
 Object3D::Object3D(std::string objectName) {
 	m_objectName = objectName;
@@ -37,6 +42,7 @@ void Object3D::init() {
 
 	// Create and compile our GLSL program from the shaders
 	reloadShaders();
+	reloadCbbShaders();
 
 	// Get a handles for uniforms
 	m_mvpMatrixID = glGetUniformLocation(m_programID, "MVP");
@@ -74,8 +80,78 @@ void Object3D::init() {
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 }
 
+void Object3D::initCbb() {
+	std::cout << "Initializing collision bounding box for drawing.." << std::endl;
+
+	// Get a handles for uniforms
+	// TODO: Maby I could use the same name as in the main shader??
+	m_cbbMvpMatrixID = glGetUniformLocation(m_cbbProgramID, "MVP");
+	CollisionShape * cs = m_physicalObject->getCollisionShape();
+
+	if(cs == NULL) {
+		std::cout << "Collision shape was null while trying to initialize cbb drawing!" << std::endl;
+		return;
+	}
+
+	std::vector< glm::vec4 > vertices = m_physicalObject->getCollisionShape()->getCornerPointList();
+	glGenBuffers(1, &m_cbbVertexBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, m_cbbVertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec4), &vertices[0], GL_STATIC_DRAW);
+
+
+	GLuint elements[] = {
+		0, 1, 2, 3,
+		4, 5, 6, 7,
+		0, 4, 1, 5, 2, 6, 3, 7
+	};
+	glGenBuffers(1, &m_cbbElementsID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cbbElementsID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+}
+
+void Object3D::reloadCbbShaders() {
+	string cbbVertexShaderFilePath = m_shaderFilePath + "cbb" + m_vertexShaderFileEndig;
+	string cbbFragmentShaderFilePath = m_shaderFilePath + "cbb" + m_fragmentShaderFileEnding;
+	m_cbbProgramID = LoadShaders(cbbVertexShaderFilePath.c_str(), cbbFragmentShaderFilePath.c_str());
+}
+
 void Object3D::drawCollisionBoundingBox() {
 	// https://www.khronos.org/opengl/wiki/Buffer_Object
+
+	// Use our shader
+	glUseProgram(m_cbbProgramID);
+	CheckGLError();
+	// Our ModelViewProjection : multiplication of our 3 matrices
+	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
+
+	// Send matrices to the currently bound shader.
+	glUniformMatrix4fv(m_cbbMvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
+	CheckGLError();
+	
+	glEnableVertexAttribArray(m_vaoCbbVertsID);
+	CheckGLError();
+	glBindBuffer(GL_ARRAY_BUFFER, m_cbbVertexBufferID);
+	CheckGLError();
+	glVertexAttribPointer(
+		3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+		4,                  // size
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+	);
+	CheckGLError();
+	
+	glLineWidth(4);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cbbElementsID);
+	CheckGLError();
+	glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, (GLvoid*)(4 * sizeof(GLuint)));
+	glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, (GLvoid*)(8 * sizeof(GLuint)));
+	CheckGLError();
+	glDisableVertexAttribArray(m_vaoCbbVertsID);
+	CheckGLError();
+	
 }
 
 void Object3D::draw() {
@@ -93,7 +169,8 @@ void Object3D::draw() {
 		drawCollisionBoundingBox();
 	}
 
-	// Use our shader
+// Use our shader
+	
 	glUseProgram(m_programID);
 
 	// Our ModelViewProjection : multiplication of our 3 matrices
@@ -116,7 +193,7 @@ void Object3D::draw() {
 	//glUniform1f(m_timeID, time);
 
 	// 1rst attribute buffer : vertices
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(m_vaoMainVertsID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 	glVertexAttribPointer(
 		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -129,7 +206,7 @@ void Object3D::draw() {
 	// 2nd buffer could be color, but not used now.
 
 	// 3rd attribute buffer : normals
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(m_vaoMainNormalsID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
 	glVertexAttribPointer(
 		2,                                // attribute
@@ -141,9 +218,14 @@ void Object3D::draw() {
 	);
 
 	// Last do this
-	glDrawArrays(GL_TRIANGLES, 0, m_verticeCount);
-	glDisableVertexAttribArray(0);
-
+	try {
+		glDrawArrays(GL_TRIANGLES, 0, m_verticeCount);
+	} catch(...) {
+		std::cout << "Some error while drawing main shape" << std::endl;
+	}
+	glDisableVertexAttribArray(m_vaoMainVertsID);
+	glDisableVertexAttribArray(m_vaoMainNormalsID);
+	
 }
 
 void Object3D::reloadShaders() {
@@ -155,5 +237,27 @@ void Object3D::reloadShaders() {
 Object3D::~Object3D() {
 	glDeleteBuffers(1, &m_vertexBufferID);
 	glDeleteBuffers(1, &m_normalBufferID);
+	glDeleteBuffers(1, &m_cbbVertexBufferID);
+	glDeleteBuffers(1, &m_cbbElementsID);
 	glDeleteProgram(m_programID);
+}
+
+
+void _CheckGLError(const char* file, int line) {
+	GLenum err(glGetError());
+
+	while(err != GL_NO_ERROR) {
+		std::string error;
+		switch(err) {
+		case GL_INVALID_OPERATION:  error = "INVALID_OPERATION";      break;
+		case GL_INVALID_ENUM:       error = "INVALID_ENUM";           break;
+		case GL_INVALID_VALUE:      error = "INVALID_VALUE";          break;
+		case GL_OUT_OF_MEMORY:      error = "OUT_OF_MEMORY";          break;
+		case GL_INVALID_FRAMEBUFFER_OPERATION:  error = "INVALID_FRAMEBUFFER_OPERATION";  break;
+		}
+		std::cout << "GL_" << error.c_str() << " - " << file << ":" << line << std::endl;
+		err = glGetError();
+	}
+
+	return;
 }
