@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CheckGLError.h" />
     <ClInclude Include="CollisionShape.h" />
     <ClInclude Include="Controls.hpp" />
     <ClInclude Include="FPSCounter.h" />

@@ -101,6 +101,9 @@
     <ClInclude Include="SimulationBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CheckGLError.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\rotate.vert">
