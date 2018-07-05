@@ -1,7 +1,7 @@
 #include "Object3D.h"
 // Check errors and print to cout. Call after every GL operation.
 #include "CheckGLError.h"
-
+#include "Util.h"
 #include <vector>
 
 using namespace std;
@@ -64,6 +64,8 @@ void Object3D::init() {
 	std::string objectFilePath = m_objectFilePath + m_objectName + m_objectFileEnding;
 	bool res = loadOBJ(objectFilePath.c_str(), vertices, uvs, normals);
 
+	m_furthestCorner = Util::maxXYZ(vertices);
+
 	if(res) {
 		// Verticecount needed in draw().
 		m_verticeCount = vertices.size();
@@ -82,22 +84,6 @@ void Object3D::init() {
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 	CheckGLError();
 
-	// attribute buffer for vertices
-	glEnableVertexAttribArray(m_vaoMainVertsID);
-	CheckGLError();
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
-	CheckGLError();
-	glVertexAttribPointer(
-		m_vaoMainVertsID,   // must match the layout in the shader.
-		3,                  // size vec3
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	);
-	CheckGLError();
-	glDisableVertexAttribArray(m_vaoMainVertsID);
-
 	// Same for normals.
 	glGenBuffers(1, &m_normalBufferID);
 	CheckGLError();
@@ -105,22 +91,6 @@ void Object3D::init() {
 	CheckGLError();
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 	CheckGLError();
-
-	// attribute buffer for normals
-	glEnableVertexAttribArray(m_vaoMainNormalsID);
-	CheckGLError();
-	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
-	CheckGLError();
-	glVertexAttribPointer(
-		m_vaoMainNormalsID,               // attribute
-		3,                                // size vec3
-		GL_FLOAT,                         // type
-		GL_FALSE,                         // normalized?
-		0,                                // stride
-		(void*)0                          // array buffer offset
-	);
-	CheckGLError();
-	glDisableVertexAttribArray(m_vaoMainNormalsID);
 }
 
 void Object3D::initCbb() {
@@ -149,6 +119,20 @@ void Object3D::initCbb() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof(elements), &elements[0], GL_STATIC_DRAW);
 	CheckGLError();
 
+}
+
+void Object3D::drawCollisionBoundingBox() {
+	// https://www.khronos.org/opengl/wiki/Buffer_Object
+
+	// Use our shader
+	glUseProgram(m_cbbProgramID);
+	CheckGLError();
+
+	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
+	// Send matrices to the currently bound shader.
+	glUniformMatrix4fv(m_cbbMvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
+	CheckGLError();
+
 	glEnableVertexAttribArray(m_vaoCbbVertsID);
 	CheckGLError();
 	glBindBuffer(GL_ARRAY_BUFFER, m_cbbVertexBufferID);
@@ -165,19 +149,6 @@ void Object3D::initCbb() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cbbElementsID);
 	CheckGLError();
 	glDisableVertexAttribArray(m_vaoCbbVertsID);
-	CheckGLError();
-}
-
-void Object3D::drawCollisionBoundingBox() {
-	// https://www.khronos.org/opengl/wiki/Buffer_Object
-
-	// Use our shader
-	glUseProgram(m_cbbProgramID);
-	CheckGLError();
-
-	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
-	// Send matrices to the currently bound shader.
-	glUniformMatrix4fv(m_cbbMvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
 	CheckGLError();
 
 	glEnableVertexAttribArray(m_vaoCbbVertsID);
@@ -230,6 +201,39 @@ void Object3D::draw() {
 	// Do time-dependant stuff
 	//float time = (float)glfwGetTime() ;
 	//glUniform1f(m_timeID, time);
+
+	// attribute buffer for vertices
+	glEnableVertexAttribArray(m_vaoMainVertsID);
+	CheckGLError();
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
+	CheckGLError();
+	glVertexAttribPointer(
+		m_vaoMainVertsID,   // must match the layout in the shader.
+		3,                  // size vec3
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+	);
+	CheckGLError();
+	glDisableVertexAttribArray(m_vaoMainVertsID);
+
+
+	// attribute buffer for normals
+	glEnableVertexAttribArray(m_vaoMainNormalsID);
+	CheckGLError();
+	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
+	CheckGLError();
+	glVertexAttribPointer(
+		m_vaoMainNormalsID,               // attribute
+		3,                                // size vec3
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		(void*)0                          // array buffer offset
+	);
+	CheckGLError();
+	glDisableVertexAttribArray(m_vaoMainNormalsID);
 
 	glEnableVertexAttribArray(m_vaoMainVertsID);
 	CheckGLError();

@@ -89,36 +89,17 @@ public:
 		return elements;
 	}
 
-	/*
-	Returns an array of vertices (as 4 succeeding floats) which 
-	are the corners of the collision shape.
-	*/
-	float* getCorners() {
-		float corners[] = {
-			minX, minY, minZ, 1.0f,
-			maxX, minY, minZ, 1.0f,
-			maxX, minY, maxZ, 1.0f,
-			minX, minY, maxZ, 1.0f,
-			minX, maxY, minZ, 1.0f,
-			maxX, maxY, minZ, 1.0f,
-			maxX, maxY, maxZ, 1.0f,
-			minX, maxY, maxZ, 1.0f
-		};
-		return corners;
+
+	void setCorner(glm::vec3 corner) {
+		m_corner = glm::vec3(abs(corner[0]), abs(corner[1]), abs(corner[2]));
+		minX = -m_corner[0];
+		maxX = m_corner[0];
+		minY = -m_corner[1];
+		maxY = m_corner[1];
+		minZ = -m_corner[2];
+		maxZ = m_corner[2];
 	}
 
-	/*
-	Returns an int array for drawing. Draw loop 0-3 and 
-	4-7, and lines for the rest.
-	*/
-	/*unsigned* getCornerDrawOrder() {
-		unsigned elements[] = {
-			0, 1, 2, 3,
-			4, 5, 6, 7,
-			0, 4, 1, 5, 2, 6, 3, 7
-		};
-		return elements;
-	}*/
 
 	/*
 	Get x-axis aligned dimension (width of the shape).
@@ -142,6 +123,8 @@ protected:
 	float maxY;
 	float minZ;
 	float maxZ;
+
+	glm::vec3 m_corner;
 };
 
 /*
@@ -155,14 +138,9 @@ public:
 	defined in the positive octant of space e.g. (-1, 1, 0) -> (1, 1, 0).
 	*/
 	CollisionBoxOrigoSymmetric(glm::vec3 corner) {
-		m_corner = glm::vec3(abs(corner[0]), abs(corner[1]), abs(corner[2]));
-		minX = -m_corner[0];
-		maxX = m_corner[0];
-		minY = -m_corner[1];
-		maxY = m_corner[1];
-		minZ = -m_corner[2];
-		maxZ = m_corner[2];
+		setCorner(corner);
 	}
+
 
 	~CollisionBoxOrigoSymmetric() {}
 

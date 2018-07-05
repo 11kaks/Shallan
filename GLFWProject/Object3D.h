@@ -140,6 +140,7 @@ public:
 	void setPhysicalObject(PhysicalObject * po) {
 		m_physicalObject = po;
 		po->setModelMatrix(m_modelMatrix);
+		po->getCollisionShape()->setCorner(m_furthestCorner);
 		initCbb();
 		m_isPhysical = true;
 	}
@@ -225,6 +226,8 @@ private:
 	glm::vec3 m_camPos;
 
 	glm::vec3 m_collisionBoxColor;
+	// Furthest corner of graphical shape. Used to define collision box.
+	glm::vec3 m_furthestCorner;
 
 	int m_verticeCount;
 	// Relative path of object files.

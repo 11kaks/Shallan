@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <limits>
+#include <glm/glm.hpp>
 
 class Util
 {
@@ -68,6 +69,51 @@ public:
 			}
 		}
 		return res;
+	}
+
+	/*
+	Returns the longest vec3 in src vector.
+	*/
+	static glm::vec3 maxLength(const std::vector<glm::vec3> &src) {
+		glm::vec3 res(0.0f);
+		for(size_t i = 0; i < src.size(); i++) {
+			if(glm::length(src[i]) > glm::length(res)) {
+				res = src[i];
+			}
+		}
+		return res;
+	}
+
+	/*
+	Finds a maximum x, y and z coordinates individually
+	and returns a vec3 that has these maximums. Can be used
+	to draw a tightes axixs-aligned bounding box possible 
+	that encompasses the whole object. Assumes that the 
+	object is centered at origo.
+	*/
+	static glm::vec3 maxXYZ(const std::vector<glm::vec3> &src) {
+
+		float maxX = 0.0f;
+		float maxY = 0.0f;
+		float maxZ = 0.0f;
+
+		for(size_t i = 0; i < src.size(); i++) {
+			glm::vec3 v = src[i];
+			float x = abs(v[0]);
+			float y = abs(v[1]);
+			float z = abs(v[2]);
+
+			if(x > maxX) {
+				maxX = x;
+			}
+			if(y > maxY) {
+				maxY = y;
+			}
+			if(z > maxZ) {
+				maxZ = z;
+			}
+		}
+		return glm::vec3(maxX, maxY, maxZ);
 	}
 };
 
