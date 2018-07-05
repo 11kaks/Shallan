@@ -1,3 +1,7 @@
+/*
+This error checker code is from https://gamedev.stackexchange.com/questions/111933/gldrawelements-crash
+by user LukGus.
+*/
 #pragma once
 
 #include <string>
@@ -11,7 +15,10 @@ void _CheckGLError(const char* file, int line);
 
 #define CheckGLError() _CheckGLError(__FILE__, __LINE__)
 
-
+/*
+Check GL errors and print into cout. Call
+after every GL operation.
+*/
 void _CheckGLError(const char* file, int line) {
 	GLenum err(glGetError());
 

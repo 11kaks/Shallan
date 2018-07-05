@@ -18,7 +18,7 @@ Object3D::Object3D() {
 }
 
 void Object3D::init() {
-	// Initialize matrises as identity.
+	// Initialize matrices as identity.
 	m_viewMatrix = glm::mat4();
 	m_modelMatrix = glm::mat4(1.0f);
 	m_projectionMatrix = glm::mat4();
@@ -46,10 +46,15 @@ void Object3D::init() {
 
 	// Get a handles for uniforms
 	m_mvpMatrixID = glGetUniformLocation(m_programID, "MVP");
+	CheckGLError();
 	m_modelMatrixID = glGetUniformLocation(m_programID, "M");
+	CheckGLError();
 	m_viewMatrixID = glGetUniformLocation(m_programID, "V");
+	CheckGLError();
 	m_lightPosId = glGetUniformLocation(m_programID, "LightPosition_worldspace");
+	CheckGLError();
 	m_camPosId = glGetUniformLocation(m_programID, "CameraPosition_worldspace");
+	CheckGLError();
 	// Not used
 	//m_timeID = glGetUniformLocation(m_programID, "inTime");
 
@@ -69,15 +74,53 @@ void Object3D::init() {
 
 	// Generate 1 buffer, put the resulting identifier in m_vertexBufferID.
 	glGenBuffers(1, &m_vertexBufferID);
+	CheckGLError();
 	// Bind the buffer.
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
+	CheckGLError();
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+	CheckGLError();
+
+	// attribute buffer for vertices
+	glEnableVertexAttribArray(m_vaoMainVertsID);
+	CheckGLError();
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
+	CheckGLError();
+	glVertexAttribPointer(
+		m_vaoMainVertsID,   // must match the layout in the shader.
+		3,                  // size vec3
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+	);
+	CheckGLError();
+	glDisableVertexAttribArray(m_vaoMainVertsID);
 
 	// Same for normals.
 	glGenBuffers(1, &m_normalBufferID);
+	CheckGLError();
 	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
+	CheckGLError();
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+	CheckGLError();
+
+	// attribute buffer for normals
+	glEnableVertexAttribArray(m_vaoMainNormalsID);
+	CheckGLError();
+	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
+	CheckGLError();
+	glVertexAttribPointer(
+		m_vaoMainNormalsID,               // attribute
+		3,                                // size vec3
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		(void*)0                          // array buffer offset
+	);
+	CheckGLError();
+	glDisableVertexAttribArray(m_vaoMainNormalsID);
 }
 
 void Object3D::initCbb() {
@@ -86,33 +129,43 @@ void Object3D::initCbb() {
 	// Get a handles for uniforms
 	// TODO: Maby I could use the same name as in the main shader??
 	m_cbbMvpMatrixID = glGetUniformLocation(m_cbbProgramID, "MVP");
+	CheckGLError();
+
 	CollisionShape * cs = m_physicalObject->getCollisionShape();
 
-	if(cs == NULL) {
-		std::cout << "Collision shape was null while trying to initialize cbb drawing!" << std::endl;
-		return;
-	}
-
-	std::vector< glm::vec4 > vertices = m_physicalObject->getCollisionShape()->getCornerPointList();
+	std::vector< glm::vec4 > vertices = cs->getCornerPointList();
 	glGenBuffers(1, &m_cbbVertexBufferID);
+	CheckGLError();
 	glBindBuffer(GL_ARRAY_BUFFER, m_cbbVertexBufferID);
+	CheckGLError();
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec4), &vertices[0], GL_STATIC_DRAW);
+	CheckGLError();
 
-
-	GLuint elements[] = {
-		0, 1, 2, 3,
-		4, 5, 6, 7,
-		0, 4, 1, 5, 2, 6, 3, 7
-	};
+	std::vector<GLuint> elements = cs->getCornerDrawOrder();
 	glGenBuffers(1, &m_cbbElementsID);
+	CheckGLError();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cbbElementsID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-}
+	CheckGLError();
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof(elements), &elements[0], GL_STATIC_DRAW);
+	CheckGLError();
 
-void Object3D::reloadCbbShaders() {
-	string cbbVertexShaderFilePath = m_shaderFilePath + "cbb" + m_vertexShaderFileEndig;
-	string cbbFragmentShaderFilePath = m_shaderFilePath + "cbb" + m_fragmentShaderFileEnding;
-	m_cbbProgramID = LoadShaders(cbbVertexShaderFilePath.c_str(), cbbFragmentShaderFilePath.c_str());
+	glEnableVertexAttribArray(m_vaoCbbVertsID);
+	CheckGLError();
+	glBindBuffer(GL_ARRAY_BUFFER, m_cbbVertexBufferID);
+	CheckGLError();
+	glVertexAttribPointer(
+		m_vaoCbbVertsID,    // attribute 3
+		4,                  // size vec4
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+	);
+	CheckGLError();
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cbbElementsID);
+	CheckGLError();
+	glDisableVertexAttribArray(m_vaoCbbVertsID);
+	CheckGLError();
 }
 
 void Object3D::drawCollisionBoundingBox() {
@@ -121,37 +174,18 @@ void Object3D::drawCollisionBoundingBox() {
 	// Use our shader
 	glUseProgram(m_cbbProgramID);
 	CheckGLError();
-	// Our ModelViewProjection : multiplication of our 3 matrices
-	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 
+	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 	// Send matrices to the currently bound shader.
 	glUniformMatrix4fv(m_cbbMvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
 	CheckGLError();
-	
+
 	glEnableVertexAttribArray(m_vaoCbbVertsID);
-	CheckGLError();
-	glBindBuffer(GL_ARRAY_BUFFER, m_cbbVertexBufferID);
-	CheckGLError();
-	glVertexAttribPointer(
-		3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		4,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	);
-	CheckGLError();
-	
-	glLineWidth(4);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_cbbElementsID);
-	CheckGLError();
 	glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, 0);
 	glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, (GLvoid*)(4 * sizeof(GLuint)));
 	glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, (GLvoid*)(8 * sizeof(GLuint)));
-	CheckGLError();
 	glDisableVertexAttribArray(m_vaoCbbVertsID);
 	CheckGLError();
-	
 }
 
 void Object3D::draw() {
@@ -166,65 +200,47 @@ void Object3D::draw() {
 	*/
 	if(m_isPhysical) {
 		m_modelMatrix = m_physicalObject->getModelMatrix();
-		drawCollisionBoundingBox();
+		if(m_drawCollisionShape){
+			drawCollisionBoundingBox();
+		}
 	}
 
-// Use our shader
-	
+	// Use our shader	
 	glUseProgram(m_programID);
+	CheckGLError();
 
-	// Our ModelViewProjection : multiplication of our 3 matrices
 	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
-
 	// Send matrices to the currently bound shader.
 	glUniformMatrix4fv(m_mvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
+	CheckGLError();
 	glUniformMatrix4fv(m_modelMatrixID, 1, GL_FALSE, &m_modelMatrix[0][0]);
+	CheckGLError();
 	glUniformMatrix4fv(m_viewMatrixID, 1, GL_FALSE, &m_viewMatrix[0][0]);
+	CheckGLError();
 
 	if(m_useLightToCam){
 		m_lightPos = m_camPos;
 	}
 
 	glUniform3fv(m_lightPosId, 1, &m_lightPos[0]);
+	CheckGLError();
 	glUniform3fv(m_camPosId, 1, &m_camPos[0]);
+	CheckGLError();
 
 	// Do time-dependant stuff
 	//float time = (float)glfwGetTime() ;
 	//glUniform1f(m_timeID, time);
 
-	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(m_vaoMainVertsID);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
-	glVertexAttribPointer(
-		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	);
-	// 2nd buffer could be color, but not used now.
-
-	// 3rd attribute buffer : normals
+	CheckGLError();
 	glEnableVertexAttribArray(m_vaoMainNormalsID);
-	glBindBuffer(GL_ARRAY_BUFFER, m_normalBufferID);
-	glVertexAttribPointer(
-		2,                                // attribute
-		3,                                // size
-		GL_FLOAT,                         // type
-		GL_FALSE,                         // normalized?
-		0,                                // stride
-		(void*)0                          // array buffer offset
-	);
-
-	// Last do this
-	try {
-		glDrawArrays(GL_TRIANGLES, 0, m_verticeCount);
-	} catch(...) {
-		std::cout << "Some error while drawing main shape" << std::endl;
-	}
+	CheckGLError();
+	glDrawArrays(GL_TRIANGLES, 0, m_verticeCount);
+	CheckGLError();
 	glDisableVertexAttribArray(m_vaoMainVertsID);
+	CheckGLError();
 	glDisableVertexAttribArray(m_vaoMainNormalsID);
+	CheckGLError();
 	
 }
 
@@ -234,11 +250,21 @@ void Object3D::reloadShaders() {
 	m_programID = LoadShaders(sVertexShaderFilePath.c_str(), sFragmentShaderFilePath.c_str());
 }
 
-Object3D::~Object3D() {
-	glDeleteBuffers(1, &m_vertexBufferID);
-	glDeleteBuffers(1, &m_normalBufferID);
-	glDeleteBuffers(1, &m_cbbVertexBufferID);
-	glDeleteBuffers(1, &m_cbbElementsID);
-	glDeleteProgram(m_programID);
+void Object3D::reloadCbbShaders() {
+	string cbbVertexShaderFilePath = m_shaderFilePath + "cbb" + m_vertexShaderFileEndig;
+	string cbbFragmentShaderFilePath = m_shaderFilePath + "cbb" + m_fragmentShaderFileEnding;
+	m_cbbProgramID = LoadShaders(cbbVertexShaderFilePath.c_str(), cbbFragmentShaderFilePath.c_str());
 }
 
+Object3D::~Object3D() {
+	glDeleteBuffers(1, &m_vertexBufferID);
+	CheckGLError();
+	glDeleteBuffers(1, &m_normalBufferID);
+	CheckGLError();
+	glDeleteBuffers(1, &m_cbbVertexBufferID);
+	CheckGLError();
+	glDeleteBuffers(1, &m_cbbElementsID);
+	CheckGLError();
+	glDeleteProgram(m_programID);
+	CheckGLError();
+}

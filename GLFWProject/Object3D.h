@@ -251,6 +251,7 @@ private:
 	bool m_isVisible = true;
 	// This flag is used in draw() to determine wheter to use physicalObject's model matrix controlled by simulation.
 	bool m_isPhysical = false;
+	bool m_drawCollisionShape = true;
 	// Physical object defines model's reaction's to physical simulation.
 	PhysicalObject * m_physicalObject;
 };

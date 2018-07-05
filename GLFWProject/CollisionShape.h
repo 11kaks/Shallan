@@ -77,6 +77,19 @@ public:
 	}
 
 	/*
+	Returns an int array for drawing. Draw loop 0-3 and
+	4-7, and lines for the rest.
+	*/
+	std::vector<unsigned> getCornerDrawOrder() {
+		std::vector<unsigned> elements = {
+			0, 1, 2, 3,
+			4, 5, 6, 7,
+			0, 4, 1, 5, 2, 6, 3, 7
+		};
+		return elements;
+	}
+
+	/*
 	Returns an array of vertices (as 4 succeeding floats) which 
 	are the corners of the collision shape.
 	*/
@@ -98,14 +111,14 @@ public:
 	Returns an int array for drawing. Draw loop 0-3 and 
 	4-7, and lines for the rest.
 	*/
-	unsigned* getCornerDrawOrder() {
+	/*unsigned* getCornerDrawOrder() {
 		unsigned elements[] = {
 			0, 1, 2, 3,
 			4, 5, 6, 7,
 			0, 4, 1, 5, 2, 6, 3, 7
 		};
 		return elements;
-	}
+	}*/
 
 	/*
 	Get x-axis aligned dimension (width of the shape).

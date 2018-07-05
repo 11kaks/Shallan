@@ -23,7 +23,7 @@ using namespace std;
 
 /*
 TODO
-- draw collision shapes
+- draw collision shapes - OK 5.7.2018
 - shape scaling (collision/graphical)
 - allow removing of objects
 - window resize
