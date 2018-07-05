@@ -105,7 +105,9 @@ int main(int argc, char** argv) {
 	scene->addObject(chair);
 	scene->addObject(cube);
 	scene->applyPhysics(cube);
-	scene->applyPhysics(chair);
+	//scene->applyPhysics(chair);
+	//chair->setScale(glm::vec3(0.5f, 1.5f, 1.0f));
+	//cube->setScale(glm::vec3(0.5f, 1.5f, 1.0f));
 	scene->setCamera(camera);
 	scene->setLight(light);
 	setScene(scene);

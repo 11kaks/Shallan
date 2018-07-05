@@ -17,6 +17,20 @@ Object3D::Object3D() {
 	init();
 }
 
+void Object3D::setPhysicalObject(PhysicalObject * po) {
+	m_physicalObject = po;
+	po->setModelMatrix(m_modelMatrix);
+	po->getCollisionShape()->setCorner(m_furthestCorner);
+	initCbb();
+	m_isPhysical = true;
+}
+
+void Object3D::removePhysicalObject() {
+	// FIXME can I do this? What if someone still uses the pointer?
+	delete m_physicalObject;
+	m_isPhysical = false;
+}
+
 void Object3D::init() {
 	// Initialize matrices as identity.
 	m_viewMatrix = glm::mat4();
@@ -128,7 +142,7 @@ void Object3D::drawCollisionBoundingBox() {
 	glUseProgram(m_cbbProgramID);
 	CheckGLError();
 
-	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
+	glm::mat4 MVP = getScaledModelMatrix() * m_viewMatrix * m_modelMatrix;
 	// Send matrices to the currently bound shader.
 	glUniformMatrix4fv(m_cbbMvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
 	CheckGLError();
@@ -180,7 +194,7 @@ void Object3D::draw() {
 	glUseProgram(m_programID);
 	CheckGLError();
 
-	glm::mat4 MVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
+	glm::mat4 MVP = getScaledModelMatrix() * m_viewMatrix * m_modelMatrix;
 	// Send matrices to the currently bound shader.
 	glUniformMatrix4fv(m_mvpMatrixID, 1, GL_FALSE, &MVP[0][0]);
 	CheckGLError();
