@@ -147,6 +147,9 @@ int main(int argc, char** argv) {
 }
 
 GLFWwindow* initGLFWWindow() {
+
+	// Guide: http://www.glfw.org/docs/latest/window_guide.html
+
 	// Error callback can be registered before init
 	glfwSetErrorCallback(errorCallback);
 
