@@ -45,6 +45,9 @@ float cameraFov = 45.0f;
 
 int m_windowWidth = 1280;
 int m_windowHeight = 720;
+int m_windowMinWidth = 400;
+int m_windowMinHeight = 200;
+bool initiallyFullScreen = true;
 
 FPSCounter * fpsCounter = new FPSCounter();
 
@@ -151,7 +154,7 @@ GLFWwindow* initGLFWWindow() {
 		// Initialization failed
 		throw(1);
 	}
-
+	
 	// AA x4
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	// Let's require a minimum OpenGL version of 3.3
@@ -161,19 +164,26 @@ GLFWwindow* initGLFWWindow() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(m_windowWidth, m_windowHeight, "GLFW window", NULL, NULL);
+	if(initiallyFullScreen) {
+		glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
+	}
 
+	GLFWwindow* window = glfwCreateWindow(m_windowWidth, m_windowHeight, "GLFW window", NULL, NULL);
+	
 	if(!window) {
 		// Failed to create a window.
 		glfwTerminate();
 		throw(1);
 	}
 
+	glfwSetWindowSizeLimits(window, m_windowMinWidth, m_windowMinHeight, GLFW_DONT_CARE, GLFW_DONT_CARE);
+	
 	// Register key callback
 	glfwSetKeyCallback(window, callbackKeyPress);
 	glfwSetCursorEnterCallback(window, callbackCursorEnter);
 	glfwSetMouseButtonCallback(window, callbackMouseButton);
 	glfwSetCursorPosCallback(window, callbackCursorPosition);
+	glfwSetWindowSizeCallback(window, callbackFramebufferResize);
 
 	// Set OpenGL context
 	glfwMakeContextCurrent(window);

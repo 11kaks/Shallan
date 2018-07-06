@@ -15,6 +15,7 @@ void callbackCursorEnter(GLFWwindow* window, int entered);
 void callbackMouseButton(GLFWwindow* window, int button, int action, int mods);
 void callbackCursorPosition(GLFWwindow* window, double xpos, double ypos);
 void callbackKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
+void callbackFramebufferResize(GLFWwindow* window, int width, int height);
 void setScene(Scene * newScene);
 void printHelp();
 

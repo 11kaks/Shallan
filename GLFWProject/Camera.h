@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <GL/glew.h>
+
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -33,6 +35,16 @@ public:
 	Move the camera on view plane.
 	*/
 	void move(float deltaX, float deltaY);
+
+	/*
+	Set new window dimensions and recalculate view and projection matrices.
+	*/
+	void setWindowDimensions(int width, int height) {
+		m_windowWidth = width;
+		m_windowHeight = height;
+		updateMatrices();
+		glViewport(0, 0, m_windowWidth, m_windowHeight);
+	}
 
 	glm::mat4 getViewMatrix() {
 		return m_viewMatrix;

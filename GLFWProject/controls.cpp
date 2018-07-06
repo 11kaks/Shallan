@@ -132,6 +132,10 @@ void mouseMiddleCommands(GLFWwindow* window, double xpos, double ypos) {
 	dragStartCursorY = ypos;
 }
 
+void callbackFramebufferResize(GLFWwindow* window, int width, int height) {
+	scene->getCamera()->setWindowDimensions(width, height);
+}
+
 
 void printHelp() {
 	std::cout << std::endl;
